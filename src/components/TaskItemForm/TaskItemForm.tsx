@@ -18,6 +18,11 @@ export interface TaskItemInfo {
   createdLocalTime: string;
   createdLocalDate: string;
   createdTime: number;
+  pausedTime?: number;
+  isPaused: boolean;
+  isCompleted: boolean;
+  isResumed: boolean;
+  resumedTime?: number;
 }
 
 const initialFormData: TaskItemInfo = {
@@ -25,36 +30,35 @@ const initialFormData: TaskItemInfo = {
   category: "",
   createdTime: Date.now(),
   createdLocalTime: "",
-  createdLocalDate: ""
+  createdLocalDate: "",
+  isPaused: false,
+  isCompleted: false,
+  isResumed: false,
 };
 
 export const TaskItemForm: React.FC<TaskItemFormProps> = props => {
   const date = new Date();
   const user = React.useContext(UserContext);
-
-  const createdTime = Date.now();
+  
   const createdLocalTime = date.toLocaleTimeString();
   const createdLocalDate = date.toLocaleDateString();
-  console.log("createdLocalTime", createdLocalTime);
   const [form, setForm] = React.useState<TaskItemInfo>(initialFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
+
   const onStartClick = () => {
-    setForm({
-      ...form,
-      createdLocalDate,
-      createdLocalTime,
-      createdTime
-    });
-    console.log("form", form);
-    sendTaskToDb(form);
     addTrackedItem({
       ...form,
+      createdLocalTime, 
+      createdLocalDate,
       userId: user?.uid || "anon",
-      name: user?.displayName || "anon"
+      name: user?.displayName || "anon",
+      createdTime: Date.now()
     });
+   
+    
   };
 
   return (

@@ -66,7 +66,7 @@ export const addTrackedItem = ({
       createdLocalTime,
       createdLocalDate,
       createdTime,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
 };
 
@@ -75,12 +75,67 @@ export const getUserActivities = (userId: string) => {
     .collection('userItems')
     .doc(userId)
     .collection('activities')
+    .orderBy("timestamp", "asc")
     .onSnapshot(querySnapshot => {
         const data: TaskItemInfo[] = [];
         querySnapshot.forEach(doc => {
-          data.push({ ...(doc.data() as TaskItemInfo) });
+          data.push((doc.data() as TaskItemInfo));
         });
         return data;
-    })
-       
+    })      
 }
+export interface PauseActivityProps {
+    userId: string;
+    createdTime: number;
+    pausedTime?: number;
+    state: 'pause' | 'resume'
+    resumedTime?: number;
+}
+
+export const setTrackingState = ({userId, createdTime, pausedTime, state, resumedTime}: PauseActivityProps) => {
+    const updateStateData = {
+        resume: {
+            isResumed: true,
+            isPaused: false,
+            resumedTime: resumedTime
+        },
+        pause: {
+            isPaused: true, 
+            isResumed: false, 
+            pausedTime: pausedTime
+        }
+    }
+    console.log(updateStateData[state])
+    return db
+    .collection('userItems')
+    .doc(userId)
+    .collection('activities')
+    .doc(`${createdTime}`)
+    .update({...updateStateData[state]})
+}
+
+export const completeActivity = ({userId, createdTime}: PauseActivityProps) => {
+    return db
+    .collection('userItems')
+    .doc(userId)
+    .collection('activities')
+    .doc(`${createdTime}`)
+    .set({
+        isCompleted: true,
+    })
+}
+export interface RemoveActivityProps {
+    userId: string;
+    createdTime: number;
+}
+export const removeActivity = ({userId, createdTime}: RemoveActivityProps) => {
+    return db
+    .collection('userItems')
+    .doc(userId)
+    .collection('activities')
+    .doc(`${createdTime}`).delete().then(() => ({isDeleted: true})).catch((e) => {
+        console.error("error in removing", e)
+        return { isDeleted: false}
+    })
+}
+
