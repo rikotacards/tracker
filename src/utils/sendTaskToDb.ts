@@ -1,4 +1,4 @@
-import { TaskItemInfo } from "../TaskItemForm/TaskItemForm";
+import { TaskItemInfo } from "../components/TaskItemForm/TaskItemForm";
 
 export const sendTaskToDb = (taskItemInfo: TaskItemInfo) => {
   const { createdTime } = taskItemInfo;

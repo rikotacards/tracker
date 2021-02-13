@@ -11,7 +11,6 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
     createdLocalTime,
     createdLocalDate
   } = props;
-  console.log('prosp', props)
   return (
     <div style={{ margin: "2px", border: "1px solid black", display: "flex" }}>
       <div>Category</div>

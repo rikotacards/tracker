@@ -1,5 +1,5 @@
 import React from "react";
-import { useTimer } from "../utils/useTimer";
+import { useTimer } from "../../utils/useTimer";
 
 export const formatTime = (timer: number) => {
   const getSeconds = `0${timer % 60}`.slice(-2);

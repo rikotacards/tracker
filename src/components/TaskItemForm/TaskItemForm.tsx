@@ -1,7 +1,8 @@
 import { Button, TextField } from "@material-ui/core";
 import React from "react";
-import { TimeDisplay } from "../TimeDisplay/TimeDisplay";
-import { sendTaskToDb } from "../utils/sendTaskToDb";
+import { addTrackedItem } from "../../firebase/dbActions";
+import { UserContext } from "../../Providers/UserProvider";
+import { sendTaskToDb } from "../../utils/sendTaskToDb";
 
 export const getCurrentTime = () => {
   return new Date();
@@ -29,10 +30,12 @@ const initialFormData: TaskItemInfo = {
 
 export const TaskItemForm: React.FC<TaskItemFormProps> = props => {
   const date = new Date();
-  const createdTime = Date.now()
+  const user = React.useContext(UserContext);
+
+  const createdTime = Date.now();
   const createdLocalTime = date.toLocaleTimeString();
   const createdLocalDate = date.toLocaleDateString();
-    console.log('createdLocalTime', createdLocalTime)
+  console.log("createdLocalTime", createdLocalTime);
   const [form, setForm] = React.useState<TaskItemInfo>(initialFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,9 +47,14 @@ export const TaskItemForm: React.FC<TaskItemFormProps> = props => {
       createdLocalDate,
       createdLocalTime,
       createdTime
-    })
-    console.log('form', form)
+    });
+    console.log("form", form);
     sendTaskToDb(form);
+    addTrackedItem({
+      ...form,
+      userId: user?.uid || "anon",
+      name: user?.displayName || "anon"
+    });
   };
 
   return (
