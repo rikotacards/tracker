@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { TaskItem } from "./TaskItem/TaskItem";
+import { TaskItemForm, TaskItemInfo } from "./TaskItemForm/TaskItemForm";
+import { TaskItemList } from "./TaskItemList/TaskItemList";
 
-function App() {
+export const App = () => {
+  const [taskItems, setItems] = React.useState<TaskItemInfo[]>([]);
+  React.useEffect(() => {
+    if (!localStorage.getItem("taskItems")) {
+      localStorage.setItem("taskItems", JSON.stringify([]));
+      return;
+    }
+    const itemsInfoResponse = localStorage.getItem("itemsInfo");
+    if (!itemsInfoResponse) {
+      return;
+    }
+    const itemsInfo = JSON.parse(itemsInfoResponse)
+    const taskItems = localStorage.getItem("taskItems");
+    console.log(taskItems)
+    if (taskItems) {
+      const taskItemsList = JSON.parse(taskItems);
+      while (taskItemsList.length > 10) {
+        taskItemsList.shift();
+      }
+      const items = taskItemsList.map((createdTime: number) => {
+        return itemsInfo[createdTime];
+      });
+      console.log('items', items)
+      setItems(items);
+    }
+  }, []);
+
+ 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        <TaskItemForm />
+      </div>
+      <TaskItemList taskItems={taskItems}/>
     </div>
   );
-}
-
-export default App;
+};
