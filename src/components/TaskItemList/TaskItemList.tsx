@@ -25,10 +25,6 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
     return () => unsub();
   }, [userId]);
 
-  // List of task, not grouped by dates
-  // const existingTasks = taskItems.map((item, i) => (
-  //   <TaskItem key={item?.createdTime} {...item} isMostRecent={i === 1} />
-  // ));
   const tasksByDate = taskItems.reduce((group: TaskItemInfo[][], c) => {
     if(group.length === 0){
      group.push([c])
@@ -47,10 +43,15 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
   
   }, [])
 
-
   if (taskItems.length === 0) {
     return <Card>Add a new task</Card>;
   }
 
   return <div><ActivitieByDateList activitiesByDate={tasksByDate}/></div>;
 };
+
+ // List of task, not grouped by dates
+  // const existingTasks = taskItems.map((item, i) => (
+  //   <TaskItem key={item?.createdTime} {...item} isMostRecent={i === 1} />
+  // ));
+  

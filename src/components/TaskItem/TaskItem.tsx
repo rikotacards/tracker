@@ -28,13 +28,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginRight: theme.spacing(1)
   },
   timeDisplay: {
-    // border: '1px solid',
-    // borderColor: 'red',
     padding: theme.spacing(0, 1, 0, 1),
     borderRadius: theme.spacing(0.5)
-  },
-  completedTime: {
-    // background: 'rgba(0, 0, 0, 0.87)'
   },
   dateTimeContainer: {
     display: "flex"
@@ -92,7 +87,7 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
         className={clsx(
           classes.itemSpacing,
           classes.timeDisplay,
-          isPaused && classes.completedTime
+          isPaused
         )}
       >
         <TimeDisplay

@@ -10,6 +10,7 @@ import { Home } from "./pages/Home";
 import { SignIn } from "./components/SignIn/SignIn";
 import { TimerControlProvider } from "./Providers/TimerControlProvider";
 import { Appbar } from "./components/Appbar/Appbar";
+import { StatsPage } from "./pages/Stats";
 
 export const App = () => {
   const user = React.useContext(UserContext);
@@ -20,6 +21,9 @@ export const App = () => {
         <Router>
           <Appbar />
           <Switch>
+            <Route exact path="/stats">
+              <StatsPage />
+            </Route>
             <Route exact path="/signIn">
               {user ? <Redirect to="/" /> : <SignIn />}
             </Route>
