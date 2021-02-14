@@ -94,6 +94,7 @@ export interface PauseActivityProps {
 }
 
 export const setTrackingState = ({userId, createdTime, pausedTime, state, resumedTime, activityDuration}: PauseActivityProps) => {
+  console.log('FIREBASE TRACKING')
     const updateStateData = {
         resume: {
             isResumed: true,

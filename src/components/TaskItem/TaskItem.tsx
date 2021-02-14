@@ -61,6 +61,7 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
           currentTime={currentTime}
           resumedTime={resumedTime}
           isMostRecent={isMostRecent}
+          label={category}
         />
       </div>
       <Button size='small' variant="contained" onClick={onDelete}>

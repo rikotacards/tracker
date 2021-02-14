@@ -23,6 +23,7 @@ interface TimeDisplayProps {
   isResumed: boolean;
   resumedTime?: number;
   isMostRecent?: boolean;
+  label:string;
 }
 
 export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
@@ -32,21 +33,20 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
     pausedTime = 0,
     currentTime,
     isResumed,
-    resumedTime = 0,
-    isMostRecent
+    isMostRecent, label
   } = props;
+  console.log('pause time from db', pausedTime, label)
   const timeControl = React.useContext(TimeControlContext);
   const user = React.useContext(UserContext);
 
   const elapsedTimeSinceCreation = Math.floor(
     ((pausedTime > 0 ? pausedTime : currentTime) -
-      createTime +
-      (resumedTime > 0 ? currentTime - resumedTime : 0)) /
+      createTime ) /
       1000
   );
   const pauseTimeSinceCreation = Math.floor((pausedTime - createTime) / 1000);
 
-  const { timer, isActive, handleStart, handlePause, handleReset } = useTimer(
+  const { timer, isActive, handleStart, handlePause } = useTimer(
     isTimerPaused ? pauseTimeSinceCreation : elapsedTimeSinceCreation
   );
   const time = formatTime(timer);
@@ -63,29 +63,24 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
   };
 
   React.useEffect(() => {
-    console.log("ENTER USE EFFECT")
+    console.log('in Use Effect, active, label', label)
     if (timeControl.isMostRecentPaused && isMostRecent) {
-      console.log("USER EFFECT, ON PAUSE");
+      console.log('USE EFFECT ON PAUSE TRIGGERED')
       onPause()
     }
-    if (isTimerPaused) {
+    if (isTimerPaused || isActive) {
       return;
     }
-    if (isActive) {
-      console.log('IS ACTIVE')
-      return;
-    }
-
+    
     if (!isTimerPaused && isResumed && !isActive) {
       handleStart();
       return;
     }
-    console.log('HANDLE START', 'active', isActive)
     handleStart();
     return () => {
       console.log("MEANT TO DO SOME CLEAN UP")
     }
-  }, [  timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused]);
+  }, [ timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused]);
 
   
   return <div>{time}</div>;
