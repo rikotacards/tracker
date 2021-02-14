@@ -27,7 +27,7 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
       />
     ));
     const activityLinesWithDate = [
-        <DaySummary dateString={dateString}/>
+        <DaySummary dateString={dateString} key={dateString}/>
      ,
       ...activityLines
     ];
