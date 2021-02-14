@@ -20,6 +20,7 @@ interface TaskItemFormProps {
 
 export interface TaskItemInfo {
   activity: string;
+  activityDuration: number;
   category: string;
   createdLocalTime: string;
   createdLocalDate: string;
@@ -40,7 +41,8 @@ const initialFormData: TaskItemInfo = {
   createdLocalDate: "",
   isPaused: false,
   isCompleted: false,
-  isResumed: false
+  isResumed: false,
+  activityDuration: 0,
 };
 
 const useStyles = makeStyles((theme: Theme) => ({

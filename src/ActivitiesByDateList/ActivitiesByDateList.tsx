@@ -1,22 +1,15 @@
-import { Card, makeStyles, Theme, Typography } from "@material-ui/core";
 import React from "react";
 import { TaskItemInfo } from "src/components/AddItemForm/AddItemForm";
 import { TaskItem } from "src/components/TaskItem/TaskItem";
+import { DaySummary } from "src/DaySummary/DaySummary";
 
 interface ActivitiesByDateListProps {
   activitiesByDate: TaskItemInfo[][];
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  dateContainer: {
-    padding: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
-}));
 export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
   activitiesByDate
 }) => {
-  const classes = useStyles();
   const rendered = activitiesByDate.map((dateGroup, dateGroupIndex) => {
     const dateStringFromDb = dateGroup[0].createdLocalDate;
     const dateParts = dateStringFromDb.split("/");
@@ -34,9 +27,8 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
       />
     ));
     const activityLinesWithDate = [
-      <Card className={classes.dateContainer} key={dateString}>
-        <Typography variant="body1">{dateString}</Typography>
-      </Card>,
+        <DaySummary dateString={dateString}/>
+     ,
       ...activityLines
     ];
     return activityLinesWithDate;
