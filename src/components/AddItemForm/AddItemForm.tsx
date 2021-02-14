@@ -10,7 +10,6 @@ import React from "react";
 import { addTrackedItem } from "src/firebase/dbActions";
 import { TimeControlContext } from "src/Providers/TimerControlProvider";
 import { UserContext } from "src/Providers/UserProvider";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 export const getCurrentTime = () => {
   return new Date();
 };
@@ -122,7 +121,6 @@ export const AddItemForm: React.FC<TaskItemFormProps> = props => {
         size="small"
         disabled={form.activity.length === 0 || form.category.length === 0}
         onClick={onStartClick}
-        // endIcon={<ArrowRightIcon />}
       >
         Start
       </Button>

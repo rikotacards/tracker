@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../Providers/UserProvider";
 
 export const Home: React.FC = () => {
-    console.log('home rendered')
   const user = React.useContext(UserContext);
     if(!user){
         return(

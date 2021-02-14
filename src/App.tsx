@@ -13,7 +13,6 @@ import { Appbar } from "./components/Appbar/Appbar";
 
 export const App = () => {
   const user = React.useContext(UserContext);
-  console.log("usr", user);
 
   return (
     <UserProvider>

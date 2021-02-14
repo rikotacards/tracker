@@ -4,9 +4,7 @@ import { setTrackingState } from "../../firebase/dbActions";
 import { TimeControlContext } from "../../Providers/TimerControlProvider";
 import { UserContext } from "../../Providers/UserProvider";
 import { useTimer } from "src/utils/useTimer";
-import { Typography, makeStyles, Theme } from "@material-ui/core";
-
-
+import { Typography } from "@material-ui/core";
 
 interface TimeDisplayProps {
   createTime: number;
@@ -19,13 +17,6 @@ interface TimeDisplayProps {
   isMostRecent?: boolean;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  time: {
-    border: '1px solid black', 
-    padding: theme.spacing(1)
-  }
-}))
-
 export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
   const {
     createTime,
@@ -35,7 +26,6 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
     isResumed,
     isMostRecent
   } = props;
-  const classes = useStyles();
   const timeControl = React.useContext(TimeControlContext);
   const user = React.useContext(UserContext);
 

@@ -1,6 +1,5 @@
 import React from "react";
 import { db } from "../../firebase/firebaseutils";
-import { TaskItem } from "../TaskItem/TaskItem";
 import { TaskItemInfo } from "../AddItemForm/AddItemForm";
 import { Card } from "@material-ui/core";
 import { ActivitieByDateList } from "src/ActivitiesByDateList/ActivitiesByDateList";
