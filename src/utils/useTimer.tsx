@@ -5,25 +5,26 @@ export const useTimer = (initialState = 0) => {
   const [isActive, setIsActive] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
   const countRef = React.useRef<any>(null);
-  const handleStart = () => {
+  
+  const handleStart = React.useCallback(() => {
     setIsActive(true);
     setIsPaused(true);
     countRef.current = setInterval(() => {
       setTimer(timer => timer + 1);
     }, 1000);
-  };
+  }, [setTimer, setIsActive, setIsPaused, countRef])
 
-  const handlePause = () => {
+  const handlePause = React.useCallback(() => {
     clearInterval(countRef.current);
     setIsPaused(false);
-  };
+  }, [setIsPaused, countRef])
 
-  const handleResume = () => {
+  const handleResume = React.useCallback(() => {
     setIsPaused(true);
     countRef.current = setInterval(() => {
       setTimer(timer => timer + 1);
     }, 1000);
-  };
+  },[setTimer, countRef, setIsPaused])
 
   const handleReset = () => {
     clearInterval(countRef.current);

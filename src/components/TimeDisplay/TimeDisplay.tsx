@@ -1,4 +1,3 @@
-import { Button } from "@material-ui/core";
 import React from "react";
 import { setTrackingState } from "../../firebase/dbActions";
 import { TimeControlContext } from "../../Providers/TimerControlProvider";
@@ -51,22 +50,26 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
   );
   const time = formatTime(timer);
   
-  const onPause = () => {
+  const onPause = React.useCallback(() => {
+    console.log('ONPAUSE called for,', label)
     setTrackingState({
       userId: user?.uid || "anon",
       createdTime: createTime,
-      pausedTime: Date.now(),
+      pausedTime: pausedTime > 0 ? pausedTime : Date.now(),
       state: "pause",
       activityDuration: Date.now() - createTime // In ms
     });
     handlePause();
-  };
+  }, [handlePause, user?.uid, createTime, label, pausedTime])
 
   React.useEffect(() => {
-    console.log('in Use Effect, active, label', label)
+    console.log('in Use Effect, active, label', label, 'isMostRecent', isMostRecent)
     if (timeControl.isMostRecentPaused && isMostRecent) {
       console.log('USE EFFECT ON PAUSE TRIGGERED')
       onPause()
+    }
+    if(pausedTime > 0){
+      return;
     }
     if (isTimerPaused || isActive) {
       return;
@@ -76,11 +79,12 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
       handleStart();
       return;
     }
+
     handleStart();
     return () => {
       console.log("MEANT TO DO SOME CLEAN UP")
     }
-  }, [ timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused]);
+  }, [onPause, label, handleStart, timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused, pausedTime]);
 
   
   return <div>{time}</div>;
