@@ -16,12 +16,11 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
       .collection("userItems")
       .doc(userId)
       .collection("activities")
-      .onSnapshot(querySnapshot => {
-        const data: TaskItemInfo[] = [];
-        querySnapshot.forEach(doc => {
-          data.push({ ...(doc.data() as TaskItemInfo) });
-        });
-          setItems(data);
+      .orderBy("timestamp", "desc")
+      .onSnapshot(snap => {
+        const data = snap.docs.map(doc => doc.data());
+        console.log('data', data)
+        setItems(data as TaskItemInfo[]);
       });
     return () => unsub();
   }, []);

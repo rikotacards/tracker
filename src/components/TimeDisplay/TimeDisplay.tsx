@@ -23,46 +23,50 @@ interface TimeDisplayProps {
 }
 
 export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
-  const { createTime, isTimerPaused, pausedTime = 0, currentTime, isResumed, resumedTime } = props;
+  const { createTime, isTimerPaused, pausedTime = 0, currentTime, isResumed, resumedTime = 0 } = props;
   const elapsedTimeSinceCreation = Math.floor(
-    ( (pausedTime > 0 ? pausedTime : currentTime) -  createTime ) / 1000
+    ( (pausedTime > 0 ? pausedTime : currentTime) -  createTime + (resumedTime > 0 ? currentTime - resumedTime : 0) ) / 1000
   )
   const currentTimeSinceCreation = Math.floor((currentTime - createTime)/1000);
   const pauseTimeSinceCreation = Math.floor((pausedTime - createTime)/1000);
-  
-  console.log('elapsed', elapsedTimeSinceCreation)
+  const [isClickedToResume, setClickToResume] = React.useState(false);
+
   const {
     timer,
-    // isActive,
+    isActive,
     // isPaused,
     handleStart,
     handlePause,
     handleReset,
     handleResume
-  } = useTimer( elapsedTimeSinceCreation );
+  } = useTimer( isTimerPaused ? pauseTimeSinceCreation : elapsedTimeSinceCreation );
   const user = React.useContext(UserContext);
   const time = formatTime(
     timer
   );
  
   React.useEffect(() => {
+    console.log('ENTER USE EFFECT', 'ISACTIVE:',  isActive)
     console.log('isTimer paused', pausedTime)
     if ( isTimerPaused ) {
-      console.log('pausedtime', pausedTime, resumedTime)
-      console.log('useEffect, pausedTime > 0, we dont handle start')
+      console.log('USE EFFECT IS TIMER PAUSED', pausedTime, resumedTime)
       return;
     }
-    if(!isTimerPaused && isResumed){
+    if(isActive){
+      return;
+    }
+    
+    if(!isTimerPaused && isResumed && !isActive){
+      console.log('USE EFFECT RESUME')
+      handleStart()
       return;
     }
   
-    
     handleStart();
     
   }, [isTimerPaused]);
 
   const onPause = () => {
-    console.log('++++++PAUSE CLICKED')
     setTrackingState({
       userId: user?.uid || "anon",
       createdTime: createTime,
@@ -78,7 +82,7 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
       resumedTime: Date.now(),
       state: "resume"
     });
-    handleResume();
+    // handleResume();
   };
   return (
     <div>
