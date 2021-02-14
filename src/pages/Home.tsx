@@ -2,8 +2,8 @@ import { Button } from "@material-ui/core";
 import React from "react";
 import {
   TaskItemInfo,
-  TaskItemForm
-} from "../components/TaskItemForm/TaskItemForm";
+  AddItemForm
+} from "../components/AddItemForm/AddItemForm";
 import { TaskItemList } from "../components/TaskItemList/TaskItemList";
 import { Link } from "react-router-dom";
 import { UserContext } from "../Providers/UserProvider";
@@ -21,7 +21,7 @@ export const Home: React.FC = () => {
   return (
     <div>
       <div>
-        <TaskItemForm />
+        <AddItemForm />
         {!user.uid! ? (
           "loading"
         ) : (

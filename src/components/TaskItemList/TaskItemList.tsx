@@ -1,7 +1,7 @@
 import React from "react";
 import { db } from "../../firebase/firebaseutils";
 import { TaskItem } from "../TaskItem/TaskItem";
-import { TaskItemInfo } from "../TaskItemForm/TaskItemForm";
+import { TaskItemInfo } from "../AddItemForm/AddItemForm";
 
 export interface TaskItemListProps {
   userId: string;
@@ -19,15 +19,13 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
       .orderBy("timestamp", "desc")
       .onSnapshot(snap => {
         const data = snap.docs.map(doc => doc.data());
-        console.log('data', data)
         setItems(data as TaskItemInfo[]);
       });
     return () => unsub();
-  }, []);
+  }, [userId]);
 
-  console.log("TaskItemLit renderd", userId, taskItems);
-  const existingTasks = taskItems.map(item => (
-    <TaskItem key={item?.createdTime} {...item} />
+  const existingTasks = taskItems.map((item, i) => (
+    <TaskItem key={item?.createdTime} {...item} isMostRecent={i === 1} />
   ));
   if (taskItems.length === 0) {
     return <div>Add a new task</div>;

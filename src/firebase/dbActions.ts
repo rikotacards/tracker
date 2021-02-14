@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { TaskItemInfo } from "../components/TaskItemForm/TaskItemForm";
+import { TaskItemInfo } from "../components/AddItemForm/AddItemForm";
 import { db } from "./firebaseutils";
 
 const getUserDocument = async (uid?: string) => {
@@ -82,7 +82,7 @@ export const getUserActivities = (userId: string) => {
           data.push((doc.data() as TaskItemInfo));
         });
         return data;
-    })      
+    }).toString()      
 }
 export interface PauseActivityProps {
     userId: string;
@@ -90,9 +90,10 @@ export interface PauseActivityProps {
     pausedTime?: number;
     state: 'pause' | 'resume'
     resumedTime?: number;
+    activityDuration?: number;
 }
 
-export const setTrackingState = ({userId, createdTime, pausedTime, state, resumedTime}: PauseActivityProps) => {
+export const setTrackingState = ({userId, createdTime, pausedTime, state, resumedTime, activityDuration}: PauseActivityProps) => {
     const updateStateData = {
         resume: {
             isResumed: true,
@@ -102,7 +103,8 @@ export const setTrackingState = ({userId, createdTime, pausedTime, state, resume
         pause: {
             isPaused: true, 
             isResumed: false, 
-            pausedTime: pausedTime
+            pausedTime: pausedTime,
+            activityDuration
         }
     }
     console.log(updateStateData[state])

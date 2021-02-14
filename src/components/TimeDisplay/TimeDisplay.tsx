@@ -1,5 +1,7 @@
+import { Button } from "@material-ui/core";
 import React from "react";
 import { setTrackingState } from "../../firebase/dbActions";
+import { TimeControlContext } from "../../Providers/TimerControlProvider";
 import { UserContext } from "../../Providers/UserProvider";
 import { useTimer } from "../../utils/useTimer";
 
@@ -20,82 +22,71 @@ interface TimeDisplayProps {
   currentTime: number;
   isResumed: boolean;
   resumedTime?: number;
+  isMostRecent?: boolean;
 }
 
 export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
-  const { createTime, isTimerPaused, pausedTime = 0, currentTime, isResumed, resumedTime = 0 } = props;
-  const elapsedTimeSinceCreation = Math.floor(
-    ( (pausedTime > 0 ? pausedTime : currentTime) -  createTime + (resumedTime > 0 ? currentTime - resumedTime : 0) ) / 1000
-  )
-  const currentTimeSinceCreation = Math.floor((currentTime - createTime)/1000);
-  const pauseTimeSinceCreation = Math.floor((pausedTime - createTime)/1000);
-  const [isClickedToResume, setClickToResume] = React.useState(false);
-
   const {
-    timer,
-    isActive,
-    // isPaused,
-    handleStart,
-    handlePause,
-    handleReset,
-    handleResume
-  } = useTimer( isTimerPaused ? pauseTimeSinceCreation : elapsedTimeSinceCreation );
+    createTime,
+    isTimerPaused,
+    pausedTime = 0,
+    currentTime,
+    isResumed,
+    resumedTime = 0,
+    isMostRecent
+  } = props;
+  const timeControl = React.useContext(TimeControlContext);
   const user = React.useContext(UserContext);
-  const time = formatTime(
-    timer
-  );
- 
-  React.useEffect(() => {
-    console.log('ENTER USE EFFECT', 'ISACTIVE:',  isActive)
-    console.log('isTimer paused', pausedTime)
-    if ( isTimerPaused ) {
-      console.log('USE EFFECT IS TIMER PAUSED', pausedTime, resumedTime)
-      return;
-    }
-    if(isActive){
-      return;
-    }
-    
-    if(!isTimerPaused && isResumed && !isActive){
-      console.log('USE EFFECT RESUME')
-      handleStart()
-      return;
-    }
-  
-    handleStart();
-    
-  }, [isTimerPaused]);
 
+  const elapsedTimeSinceCreation = Math.floor(
+    ((pausedTime > 0 ? pausedTime : currentTime) -
+      createTime +
+      (resumedTime > 0 ? currentTime - resumedTime : 0)) /
+      1000
+  );
+  const pauseTimeSinceCreation = Math.floor((pausedTime - createTime) / 1000);
+
+  const { timer, isActive, handleStart, handlePause, handleReset } = useTimer(
+    isTimerPaused ? pauseTimeSinceCreation : elapsedTimeSinceCreation
+  );
+  const time = formatTime(timer);
+  
   const onPause = () => {
     setTrackingState({
       userId: user?.uid || "anon",
       createdTime: createTime,
       pausedTime: Date.now(),
-      state: "pause"
+      state: "pause",
+      activityDuration: Date.now() - createTime // In ms
     });
     handlePause();
   };
-  const onResume = () => {
-    setTrackingState({
-      userId: user?.uid || "anon",
-      createdTime: createTime,
-      resumedTime: Date.now(),
-      state: "resume"
-    });
-    // handleResume();
-  };
-  return (
-    <div>
-      {time}
-      <div>
-        {/* {!isActive && <button onClick={handleStart}> Start </button>} */}
-        {(
-          <button onClick={isTimerPaused ? onResume : onPause}>
-            {isTimerPaused ? "Resume" : "Pause"}
-          </button>
-        )}
-        <button onClick={handleReset}>Reset</button>
-      </div>
-    </div>
-  );
+
+  React.useEffect(() => {
+    console.log("ENTER USE EFFECT")
+    if (timeControl.isMostRecentPaused && isMostRecent) {
+      console.log("USER EFFECT, ON PAUSE");
+      onPause()
+    }
+    if (isTimerPaused) {
+      return;
+    }
+    if (isActive) {
+      console.log('IS ACTIVE')
+      return;
+    }
+
+    if (!isTimerPaused && isResumed && !isActive) {
+      handleStart();
+      return;
+    }
+    console.log('HANDLE START', 'active', isActive)
+    handleStart();
+    return () => {
+      console.log("MEANT TO DO SOME CLEAN UP")
+    }
+  }, [  timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused]);
+
+  
+  return <div>{time}</div>;
 };
