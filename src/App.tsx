@@ -9,6 +9,7 @@ import {
 import { Home } from "./pages/Home";
 import { SignIn } from "./components/SignIn/SignIn";
 import { TimerControlProvider } from "./Providers/TimerControlProvider";
+import { Appbar } from "./components/Appbar/Appbar";
 
 export const App = () => {
   const user = React.useContext(UserContext);
@@ -18,6 +19,7 @@ export const App = () => {
     <UserProvider>
       <TimerControlProvider>
         <Router>
+          <Appbar />
           <Switch>
             <Route exact path="/signIn">
               {user ? <Redirect to="/" /> : <SignIn />}

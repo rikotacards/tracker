@@ -2,6 +2,8 @@ import React from "react";
 import { db } from "../../firebase/firebaseutils";
 import { TaskItem } from "../TaskItem/TaskItem";
 import { TaskItemInfo } from "../AddItemForm/AddItemForm";
+import { Card } from "@material-ui/core";
+import { ActivitieByDateList } from "src/ActivitiesByDateList/ActivitiesByDateList";
 
 export interface TaskItemListProps {
   userId: string;
@@ -24,12 +26,32 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
     return () => unsub();
   }, [userId]);
 
-  const existingTasks = taskItems.map((item, i) => (
-    <TaskItem key={item?.createdTime} {...item} isMostRecent={i === 1} />
-  ));
+  // List of task, not grouped by dates
+  // const existingTasks = taskItems.map((item, i) => (
+  //   <TaskItem key={item?.createdTime} {...item} isMostRecent={i === 1} />
+  // ));
+  const tasksByDate = taskItems.reduce((group: TaskItemInfo[][], c) => {
+    if(group.length === 0){
+     group.push([c])
+     return group
+   }   
+   const lastIndexOfGroup =  group.length -1
+
+   if(group.length > 0){
+     if(group[lastIndexOfGroup][0].createdLocalDate === c.createdLocalDate){
+       group[0].push(c)
+     } else {
+       group.push([c])
+     }
+   }
+   return group
+  
+  }, [])
+
+
   if (taskItems.length === 0) {
-    return <div>Add a new task</div>;
+    return <Card>Add a new task</Card>;
   }
 
-  return <div>{existingTasks}</div>;
+  return <div><ActivitieByDateList activitiesByDate={tasksByDate}/></div>;
 };

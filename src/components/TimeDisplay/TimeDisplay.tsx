@@ -1,17 +1,12 @@
 import React from "react";
+import { formatTime } from "src/utils/formatTime";
 import { setTrackingState } from "../../firebase/dbActions";
 import { TimeControlContext } from "../../Providers/TimerControlProvider";
 import { UserContext } from "../../Providers/UserProvider";
-import { useTimer } from "../../utils/useTimer";
+import { useTimer } from "src/utils/useTimer";
+import { Typography, makeStyles, Theme } from "@material-ui/core";
 
-export const formatTime = (timer: number) => {
-  const getSeconds = `0${timer % 60}`.slice(-2);
-  const minutes = Math.floor(timer / 60);
-  const getMinutes = `0${minutes % 60}`.slice(-2);
-  const getHours = `0${Math.floor(timer / 3600)}`.slice(-2);
 
-  return `${getHours} : ${getMinutes} : ${getSeconds}`;
-};
 
 interface TimeDisplayProps {
   createTime: number;
@@ -22,8 +17,14 @@ interface TimeDisplayProps {
   isResumed: boolean;
   resumedTime?: number;
   isMostRecent?: boolean;
-  label:string;
 }
+
+const useStyles = makeStyles((theme: Theme) => ({
+  time: {
+    border: '1px solid black', 
+    padding: theme.spacing(1)
+  }
+}))
 
 export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
   const {
@@ -32,9 +33,9 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
     pausedTime = 0,
     currentTime,
     isResumed,
-    isMostRecent, label
+    isMostRecent
   } = props;
-  console.log('pause time from db', pausedTime, label)
+  const classes = useStyles();
   const timeControl = React.useContext(TimeControlContext);
   const user = React.useContext(UserContext);
 
@@ -51,7 +52,6 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
   const time = formatTime(timer);
   
   const onPause = React.useCallback(() => {
-    console.log('ONPAUSE called for,', label)
     setTrackingState({
       userId: user?.uid || "anon",
       createdTime: createTime,
@@ -60,12 +60,10 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
       activityDuration: Date.now() - createTime // In ms
     });
     handlePause();
-  }, [handlePause, user?.uid, createTime, label, pausedTime])
+  }, [handlePause, user?.uid, createTime, pausedTime])
 
   React.useEffect(() => {
-    console.log('in Use Effect, active, label', label, 'isMostRecent', isMostRecent)
-    if (timeControl.isMostRecentPaused && isMostRecent) {
-      console.log('USE EFFECT ON PAUSE TRIGGERED')
+    if (timeControl.isMostRecentPaused && isMostRecent && pausedTime === 0) {
       onPause()
     }
     if(pausedTime > 0){
@@ -84,8 +82,13 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
     return () => {
       console.log("MEANT TO DO SOME CLEAN UP")
     }
-  }, [onPause, label, handleStart, timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused, pausedTime]);
+  }, [onPause,  handleStart, timeControl.isMostRecentPaused, isMostRecent, isActive, isResumed, isTimerPaused, pausedTime]);
 
   
-  return <div>{time}</div>;
+  return (
+    <Typography variant='body2' color={isTimerPaused ? undefined: 'primary'}>
+      {time.hours}:{time.minutes}:{time.seconds}
+    </Typography>
+
+  )
 };

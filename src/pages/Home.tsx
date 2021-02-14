@@ -1,7 +1,6 @@
 import { Button } from "@material-ui/core";
 import React from "react";
 import {
-  TaskItemInfo,
   AddItemForm
 } from "../components/AddItemForm/AddItemForm";
 import { TaskItemList } from "../components/TaskItemList/TaskItemList";
