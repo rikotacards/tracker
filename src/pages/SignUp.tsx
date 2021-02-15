@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { auth, signInWithGoogle } from "../firebase/firebaseutils";
-import { UserContext } from "../Providers/UserProvider";
 import { useHistory } from "react-router-dom";
 import { generateUserDocument } from "../firebase/dbActions";
 import {
@@ -46,9 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 export const SignUp: React.FC = () => {
   const classes = useStyles();
-  const user = React.useContext(UserContext);
   const history = useHistory();
- 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,7 +62,9 @@ export const SignUp: React.FC = () => {
         email,
         password
       );
-      user && generateUserDocument(user, { displayName });
+      user && generateUserDocument(user, { displayName }).then(() => {
+        history.push('/')
+      })
     } catch (error) {
       console.log("error", error);
       setError("Error Signing up with email and password");

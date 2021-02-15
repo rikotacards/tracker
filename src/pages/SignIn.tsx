@@ -11,8 +11,7 @@ import firebase from "firebase/app";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { auth, signInWithGoogle } from "../firebase/firebaseutils";
-import { UserContext } from "../Providers/UserProvider";
+import { auth } from "../firebase/firebaseutils";
 import GoogleSignIn from "src/assets/googleSignIn/google-signIn-blue-2x.png";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -65,7 +64,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 export const SignIn: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const user = React.useContext(UserContext);
 
   const provider = new firebase.auth.GoogleAuthProvider();
   const [email, setEmail] = useState("");
@@ -76,11 +74,8 @@ export const SignIn: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-      console.log('here')
-      console.log(user)
-      console.log('pusehd')
+
       return firebase.auth().signInWithPopup(provider).then(() => {
-        console.log('LOGGED IN')
         history.push('/')
       })
     })
@@ -95,7 +90,10 @@ export const SignIn: React.FC = () => {
     event.preventDefault();
     auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => {
       
-      return firebase.auth().signInWithEmailAndPassword(email, password);
+      return firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+        history.push('/')
+
+      })
     })
     .catch((er) => {console.error(er)})
   };
@@ -168,7 +166,7 @@ export const SignIn: React.FC = () => {
         </Button>
         <div className={classes.noAccountForgotPassword}>
           <Typography variant="caption">Don't have an account? </Typography>
-          <Link to="/signUp" className="text-blue-500 hover:text-blue-600">
+          <Link to="signUp" className="text-blue-500 hover:text-blue-600">
             <Typography variant="caption"> Sign up</Typography>
           </Link>{" "}
           <br />{" "}
