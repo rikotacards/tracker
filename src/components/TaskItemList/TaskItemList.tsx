@@ -45,14 +45,6 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
 
   const activitiesByDate = groupByDate(activities);
 
-  if (activities.length === 0 && !loading) {
-    return (
-      <Card className={classes.addNewContainer}>
-        <Typography variant='caption' color='primary'>Add new task using form above</Typography><ArrowDropUpIcon color='primary'/>
-      </Card>
-    );
-  }
-
   if(loading){
     return (
       <>
@@ -67,10 +59,18 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
           </div>, 8
           )}
       </>
-
-
     )
   }
+
+  if (activities.length === 0 && !loading) {
+    return (
+      <Card className={classes.addNewContainer}>
+        <Typography variant='caption' color='primary'>Add new task using form above</Typography><ArrowDropUpIcon color='primary'/>
+      </Card>
+    );
+  }
+
+
 
   return (
     <div>
