@@ -49,7 +49,7 @@ export const SummaryCharts: React.FC<SummaryChartsProps> = ({isMobileVariant, da
         setItems(data as TaskItemInfo[]);
       });
     return () => unsub();
-  }, [user?.uid]);
+  }, [demoUserId, user?.uid, oneDayPrior, oneDayAfter]);
   const labels = taskItems.map(item => item.createdLocalTime);
   const data = taskItems.map(item => item.activityDuration);
   const uniqueCategories = getUniqueCategories(taskItems);

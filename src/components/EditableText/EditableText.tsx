@@ -3,7 +3,7 @@ import { updateActivityField } from "src/firebase/dbActions";
 
 interface EditableTextProps {
   placeholder: string;
-  userId: string;
+  userId?: string;
   createdTime: number;
   text: string;
 }
@@ -11,7 +11,6 @@ interface EditableTextProps {
 // https://blog.logrocket.com/the-complete-guide-to-building-inline-editable-ui-in-react/
 export const EditableText: React.FC<EditableTextProps> = ({
   children,
-  placeholder,
   text,
   createdTime,
   userId
@@ -19,6 +18,10 @@ export const EditableText: React.FC<EditableTextProps> = ({
   const [isEditing, setEdit] = React.useState(false);
   const [editingText, setText] = React.useState(text);
   const toggleEdit = () => {
+      if(!userId){
+          return
+      }
+    userId?.length > 0 &&
     setEdit(!isEditing);
     updateActivityField({
       userId,

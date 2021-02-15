@@ -1,7 +1,6 @@
 import {
   Button,
   Card,
-  Chip,
   IconButton,
   makeStyles,
   Theme,
@@ -98,7 +97,7 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
         <EditableText
           text={activity}
           placeholder="edit"
-          userId={user?.uid || ""}
+          userId={user?.uid}
           createdTime={createdTime}
         >
           <Button size='small'  className={clsx(classes.itemSpacing, classes.activityText)}>
