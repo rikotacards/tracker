@@ -22,7 +22,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
   const { userId } = props;
   const classes = useStyles();
   const [activities, setActivities] = React.useState<TaskItemInfo[]>([]);
-  const [tasksLoaded, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const unsub = db
@@ -35,12 +35,12 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
         setActivities(data as TaskItemInfo[])
         setLoading(false)
       })
-    return () => unsub();
+    return () => unsub()
   }, [userId]);
 
   const activitiesByDate = groupByDate(activities);
 
-  if (activities.length === 0) {
+  if (activities.length === 0 && !loading) {
     return (
       <Card className={classes.addNewContainer}>
         <Typography variant='caption' color='primary'>Add new task using form above</Typography><ArrowDropUpIcon color='primary'/>
@@ -50,7 +50,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
 
   return (
     <div>
-      {tasksLoaded ?  null : <LinearProgress/>}
+      {loading ?  <LinearProgress/> : null}
       <ActivitieByDateList activitiesByDate={activitiesByDate} />
     </div>
   );
