@@ -28,7 +28,7 @@ export const Appbar: React.FC = () => {
     <React.Fragment>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6">Fluid Tracker</Typography>
+          <Typography variant="h6">Temporal</Typography>
           {user?.uid ? (
             <Button
               size="small"

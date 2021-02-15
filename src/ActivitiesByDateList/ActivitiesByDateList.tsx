@@ -2,6 +2,7 @@ import React from "react";
 import { TaskItemInfo } from "src/components/AddItemForm/AddItemForm";
 import { TaskItem } from "src/components/TaskItem/TaskItem";
 import { DaySummary } from "src/DaySummary/DaySummary";
+import { getMsToDateString } from "src/utils/groupByDate";
 
 interface ActivitiesByDateListProps {
   activitiesByDate: TaskItemInfo[][];
@@ -10,9 +11,10 @@ interface ActivitiesByDateListProps {
 export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
   activitiesByDate
 }) => {
+
   const rendered = activitiesByDate.map((dateGroup, dateGroupIndex) => {
     const { createdTime } = dateGroup[0];
-    const dateString = new Date(createdTime).toDateString();
+    const dateString = getMsToDateString(createdTime)
 
     const activityLines = dateGroup.map((activityItem, activityItemIndex) => (
       <TaskItem
