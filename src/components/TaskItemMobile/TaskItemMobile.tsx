@@ -1,7 +1,6 @@
 import {
   Button,
   Card,
-  Chip,
   Collapse,
   IconButton,
   makeStyles,
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column"
   },
   activityContainer: {
-    width: "200px"
+    width: "170px"
     // padding: theme.spacing(0.7)
   },
   activityText: {
@@ -135,8 +134,6 @@ export const TaskItemMobile: React.FC<TaskItemInfo> = props => {
           <MoreVertIcon color={isDeleteClicked ? "secondary" : undefined} />
         </IconButton>
       </div>
-      {/* <Tag label={category} /> */}
-
       <Collapse in={isDeleteClicked}>
         <Grow in={isDeleteClicked}>
           <Button
