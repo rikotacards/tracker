@@ -6,10 +6,12 @@ import { getMsToDateString } from "src/utils/groupByDate";
 
 interface ActivitiesByDateListProps {
   activitiesByDate: TaskItemInfo[][];
+  demoUserId?: string;
 }
 
 export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
-  activitiesByDate
+  activitiesByDate,
+  demoUserId
 }) => {
 
   const rendered = activitiesByDate.map((dateGroup, dateGroupIndex) => {
@@ -24,7 +26,7 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
       />
     ));
     const activityLinesWithDate = [
-      <DaySummary dateString={dateString} key={dateString} />,
+      <DaySummary demoUserId={demoUserId} dateString={dateString} key={dateString} />,
       ...activityLines
     ];
     return activityLinesWithDate;

@@ -24,8 +24,9 @@ const useMobileStyles = makeStyles((theme: Theme) => ({
 }));
 interface SummaryChartsProps {
   dateString: string;
+  demoUserId?: string;
 }
-export const SummaryCharts: React.FC<SummaryChartsProps> = ({dateString}) => {
+export const SummaryCharts: React.FC<SummaryChartsProps> = ({dateString, demoUserId}) => {
   const user = React.useContext(UserContext);
   const classes = useStyles();
   const classesMobile = useMobileStyles();
@@ -37,7 +38,7 @@ export const SummaryCharts: React.FC<SummaryChartsProps> = ({dateString}) => {
   React.useEffect(() => {
     const unsub = db
       .collection("userItems")
-      .doc(user?.uid)
+      .doc(demoUserId || user?.uid)
       .collection("activities")
       .where("createdTime", ">", oneDayPrior)
       .where("createdTime", "<", oneDayAfter)

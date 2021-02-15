@@ -41,8 +41,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface DaySummaryProps {
   dateString: string;
+  demoUserId?: string;
 }
-export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
+export const DaySummary: React.FC<DaySummaryProps> = ({demoUserId, dateString }) => {
   const [isExpanded, setExpand] = React.useState(false);
   const classes = useStyles();
   const toggleExpand = () => {
@@ -63,7 +64,7 @@ export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
         </IconButton>
       </div>
       <Collapse in={isExpanded}>
-        <SummaryCharts dateString={dateString}/>
+        <SummaryCharts demoUserId={demoUserId} dateString={dateString}/>
         <Button onClick={toggleExpand} className={classes.collapseButton}>
           <ExpandLessIcon />
         </Button>

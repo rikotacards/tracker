@@ -18,10 +18,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 export interface TaskItemListProps {
   userId: string;
+  demoUserId?: string;
 }
 
 export const TaskItemList: React.FC<TaskItemListProps> = props => {
-  const { userId } = props;
+  const { userId, demoUserId } = props;
   const classes = useStyles();
   const skeletonClasses = useSkeletonStyles();
   const [activities, setActivities] = React.useState<TaskItemInfo[]>([]);
@@ -72,7 +73,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
 
   return (
     <div>
-      <ActivitieByDateList activitiesByDate={activitiesByDate} />
+      <ActivitieByDateList activitiesByDate={activitiesByDate} demoUserId={demoUserId}/>
     </div>
   );
 };
