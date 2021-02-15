@@ -13,8 +13,8 @@ export const getData = async (userId: string) => {
     .collection("userItems")
     .doc(userId)
     .collection("activities")
-    .where("createdLocalDate", ">", "13/02/2021")
-    .where("createdLocalDate", "<", "15/02/2021")
+    .where("createdLocalDate", ">", "14/02/2021")
+    .where("createdLocalDate", "<", "16/02/2021")
     .orderBy("createdLocalDate", "desc");
 
   const querySnapshot = await query.get();

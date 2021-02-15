@@ -117,6 +117,22 @@ export const setTrackingState = ({userId, createdTime, pausedTime, state, resume
     .update({...updateStateData[state]})
 }
 
+interface UpdateActivityFieldProps{
+  userId: string; 
+  createdTime: number; 
+  field: keyof TaskItemInfo; 
+  text: string;
+}
+
+export const updateActivityField = ({userId, createdTime, field, text}: UpdateActivityFieldProps) => {
+    return db
+    .collection('userItems')
+    .doc(userId)
+    .collection('activities')
+    .doc(`${createdTime}`)
+    .update({[field]: text})
+}
+
 export const completeActivity = ({userId, createdTime}: PauseActivityProps) => {
     return db
     .collection('userItems')

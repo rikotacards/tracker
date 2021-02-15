@@ -11,8 +11,8 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
   activitiesByDate
 }) => {
   const rendered = activitiesByDate.map((dateGroup, dateGroupIndex) => {
-    const createdTime = dateGroup[0].createdTime;
-    const dateString = new Date(createdTime).toDateString()
+    const { createdTime } = dateGroup[0];
+    const dateString = new Date(createdTime).toDateString();
 
     const activityLines = dateGroup.map((activityItem, activityItemIndex) => (
       <TaskItem
@@ -22,8 +22,7 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
       />
     ));
     const activityLinesWithDate = [
-        <DaySummary dateString={dateString} key={dateString}/>
-     ,
+      <DaySummary dateString={dateString} key={dateString} />,
       ...activityLines
     ];
     return activityLinesWithDate;

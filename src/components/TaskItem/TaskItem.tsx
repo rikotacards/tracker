@@ -16,6 +16,7 @@ import { TimeDisplay } from "src/components/TimeDisplay/TimeDisplay";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Grow from "@material-ui/core/Grow";
 import clsx from "clsx";
+import { EditableText } from "../EditableText/EditableText";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -41,7 +42,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   activityContainer: {
     width: "200px",
-    padding: theme.spacing(0.7)
+    // padding: theme.spacing(0.7)
+  },
+  activityText: {
+    textTransform: 'capitalize',
+    textAlign: 'left',
+    textDecoration: 'none'
+    
   }
 }));
 export const TaskItem: React.FC<TaskItemInfo> = props => {
@@ -70,20 +77,27 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
 
   return (
     <Card className={classes.root}>
-        <div>
-          <Typography variant="caption">Started: </Typography>
-          <Typography variant="caption" className={classes.itemSpacing}>
-            {createdLocalTime}
-          </Typography>
-        </div>
-    
+      <div>
+        <Typography variant="caption">Started: </Typography>
+        <Typography variant="caption" className={classes.itemSpacing}>
+          {createdLocalTime}
+        </Typography>
+      </div>
+
       <div className={classes.categoryContainer}>
         <Chip className={classes.itemSpacing} label={category} />
       </div>
       <div className={clsx(classes.activityContainer, classes.itemSpacing)}>
-        <Typography variant="body2" className={classes.itemSpacing}>
-          {activity}
-        </Typography>
+        <EditableText
+          text={activity}
+          placeholder="edit"
+          userId={user?.uid || ""}
+          createdTime={createdTime}
+        >
+          <Button size='small'  className={clsx(classes.itemSpacing, classes.activityText)}>
+            {activity}
+          </Button>
+        </EditableText>
       </div>
       <Button
         variant="outlined"

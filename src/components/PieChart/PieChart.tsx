@@ -16,7 +16,6 @@ export const PieChart: React.FC<PieChartProps> = ({labels, data}) => {
             data: {
                 labels: labels|| ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                 datasets: [{
-                    label: '# of Votes',
                     data: data || [12, 19, 3, 5, 2, 3],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -39,13 +38,13 @@ export const PieChart: React.FC<PieChartProps> = ({labels, data}) => {
             },
             options: {
                 responsive: true,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
+                // scales: {
+                //     yAxes: [{
+                //         ticks: {
+                //             beginAtZero: true
+                //         }
+                //     }]
+                // }
             }
         });
     
