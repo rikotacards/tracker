@@ -7,11 +7,13 @@ import { getMsToDateString } from "src/utils/groupByDate";
 interface ActivitiesByDateListProps {
   activitiesByDate: TaskItemInfo[][];
   demoUserId?: string;
+  isMobileVariant?: boolean;
 }
 
 export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
   activitiesByDate,
-  demoUserId
+  demoUserId,
+  isMobileVariant
 }) => {
 
   const rendered = activitiesByDate.map((dateGroup, dateGroupIndex) => {
@@ -26,7 +28,7 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
       />
     ));
     const activityLinesWithDate = [
-      <DaySummary demoUserId={demoUserId} dateString={dateString} key={dateString} />,
+      <DaySummary isMobileVariant={isMobileVariant} demoUserId={demoUserId} dateString={dateString} key={dateString} />,
       ...activityLines
     ];
     return activityLinesWithDate;

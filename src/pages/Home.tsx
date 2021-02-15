@@ -1,10 +1,11 @@
-import { Box, Button, Typography, makeStyles, Theme } from "@material-ui/core";
+import { makeStyles, Theme } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import React from "react";
 import { AddItemForm } from "src/components/AddItemForm/AddItemForm";
 import { TaskItemList } from "src/components/TaskItemList/TaskItemList";
 import { UserContext } from "src/Providers/UserProvider";
 import { SignIn } from "./SignIn";
+import { SignUp } from "./SignUp";
 
 export const getActivitiesSkeleton = (component: JSX.Element, amount: number) => {
   const skeletons = []
@@ -30,7 +31,7 @@ export const Home: React.FC = () => {
   const user = React.useContext(UserContext);
   React.useEffect(() => {}, [user]);
   if (!user) {
-    return <SignIn />;
+    return <SignUp />;
   }
   return (
     <div>

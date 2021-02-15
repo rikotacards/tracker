@@ -4,7 +4,6 @@ import {
   Theme,
   Button,
   TextField,
-  LinearProgress
 } from "@material-ui/core";
 import "firebase/auth";
 import firebase from "firebase/app";

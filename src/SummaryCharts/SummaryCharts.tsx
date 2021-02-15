@@ -25,8 +25,9 @@ const useMobileStyles = makeStyles((theme: Theme) => ({
 interface SummaryChartsProps {
   dateString: string;
   demoUserId?: string;
+  isMobileVariant?: boolean;
 }
-export const SummaryCharts: React.FC<SummaryChartsProps> = ({dateString, demoUserId}) => {
+export const SummaryCharts: React.FC<SummaryChartsProps> = ({isMobileVariant, dateString, demoUserId}) => {
   const user = React.useContext(UserContext);
   const classes = useStyles();
   const classesMobile = useMobileStyles();
@@ -66,7 +67,7 @@ export const SummaryCharts: React.FC<SummaryChartsProps> = ({dateString, demoUse
       </div>
     );
   }
-  if (isMobile()) {
+  if (isMobile() || isMobileVariant) {
     return (
       <div className={classesMobile.root}>
         <div>

@@ -16,13 +16,20 @@ import "firebase/auth";
 import firebase from "firebase/app";
 import { TaskItemList } from "src/components/TaskItemList/TaskItemList";
 import { isMobile } from "src/platform/platform";
+import clsx from 'clsx';
+
 const useStyles = makeStyles((theme: Theme) => ({
   mainWrapper: {
     display: "flex",
-    flexDirection: isMobile() ? "column" : "row"
+    flexDirection: isMobile() ? "column" : "row",
+    alignItems: isMobile() ? undefined : "flex-start",
+    justifyContent: "center",
   },
   taskItemList: {
-
+    marginLeft: theme.spacing(2),
+    maxHeight: '100vh',
+    overflowX: 'scroll',
+    maxWidth: '500px'
   },
   container: {
     display: "flex",
@@ -221,8 +228,8 @@ export const SignUp: React.FC = () => {
           </p>
         </div>
       </div>
-      <div>
-      <TaskItemList demoUserId={"OMqRbaSORWf7c57XDaguSF94Qgm1"} userId={"OMqRbaSORWf7c57XDaguSF94Qgm1"}/>
+      <div className={clsx(!isMobile() && classes.taskItemList)}>
+      <TaskItemList isMobileVariant={true} demoUserId={"OMqRbaSORWf7c57XDaguSF94Qgm1"} userId={"OMqRbaSORWf7c57XDaguSF94Qgm1"}/>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import { db } from "../../firebase/firebaseutils";
 import { TaskItemInfo } from "../AddItemForm/AddItemForm";
-import { Card, LinearProgress, Typography } from "@material-ui/core";
+import { Card, Typography } from "@material-ui/core";
 import { ActivitieByDateList } from "src/ActivitiesByDateList/ActivitiesByDateList";
 import { groupByDate } from "src/utils/groupByDate";
 import { makeStyles, Theme } from "@material-ui/core";
@@ -19,10 +19,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 export interface TaskItemListProps {
   userId: string;
   demoUserId?: string;
+  isMobileVariant? : boolean;
 }
 
 export const TaskItemList: React.FC<TaskItemListProps> = props => {
-  const { userId, demoUserId } = props;
+  const { userId, demoUserId , isMobileVariant} = props;
   const classes = useStyles();
   const skeletonClasses = useSkeletonStyles();
   const [activities, setActivities] = React.useState<TaskItemInfo[]>([]);
@@ -73,7 +74,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
 
   return (
     <div>
-      <ActivitieByDateList activitiesByDate={activitiesByDate} demoUserId={demoUserId}/>
+      <ActivitieByDateList isMobileVariant={isMobileVariant} activitiesByDate={activitiesByDate} demoUserId={demoUserId}/>
     </div>
   );
 };
