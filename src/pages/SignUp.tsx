@@ -222,7 +222,7 @@ export const SignUp: React.FC = () => {
           </Button>
           <p className="text-center my-3">
             <Typography variant="caption">Already have an account?</Typography>
-            <Link to="/" className="text-blue-500 hover:text-blue-600">
+            <Link to="/signIn" className="text-blue-500 hover:text-blue-600">
               <Typography variant="caption"> Sign in </Typography>
             </Link>
           </p>

@@ -4,7 +4,6 @@ import React from "react";
 import { AddItemForm } from "src/components/AddItemForm/AddItemForm";
 import { TaskItemList } from "src/components/TaskItemList/TaskItemList";
 import { UserContext } from "src/Providers/UserProvider";
-import { SignIn } from "./SignIn";
 import { SignUp } from "./SignUp";
 
 export const getActivitiesSkeleton = (component: JSX.Element, amount: number) => {

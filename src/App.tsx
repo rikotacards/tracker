@@ -1,10 +1,9 @@
 import React from "react";
-import { UserContext, UserProvider } from "./Providers/UserProvider";
+import {  UserProvider } from "./Providers/UserProvider";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
 } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { SignIn } from "./pages/SignIn";
@@ -13,7 +12,7 @@ import { Appbar } from "./components/Appbar/Appbar";
 import { SignUp } from "./pages/SignUp";
 
 export const App = () => {
-  const user = React.useContext(UserContext);
+  // const user = React.useContext(UserContext);
 
   return (
     <UserProvider>
@@ -25,7 +24,7 @@ export const App = () => {
               <SignUp />
             </Route>
             <Route exact path="/signIn">
-              {user ? <Redirect to="/" /> : <SignIn />}
+              <SignIn />
             </Route>
             <Route exact path="/">
               <Home />
