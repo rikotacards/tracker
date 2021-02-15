@@ -1,5 +1,6 @@
 import React from 'react'; 
 import Chart from 'chart.js';
+import { formatTime } from 'src/utils/formatTime';
 
 interface BarChartProps {
     labels: string[];
@@ -42,7 +43,17 @@ export const BarChart: React.FC<BarChartProps> = ({labels, data}) => {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            //@ts-ignore
+                            callback: (value) => {
+                                const timeSeconds = +value/1000
+                                const time = formatTime(timeSeconds)
+                                return `${time.hours}h`
+                            }   
                         }
                     }]
                 }

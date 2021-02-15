@@ -4,13 +4,14 @@ import {
   IconButton,
   Typography,
   makeStyles,
-  Theme
+  Theme,
+  Button
 } from "@material-ui/core";
 import React from "react";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
 import { SummaryCharts } from "src/SummaryCharts/SummaryCharts";
-
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(1),
@@ -29,6 +30,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   expandOpen: {
     transform: "rotate(180deg)"
+  },
+  collapseButton: {
+    display: "flex",
+    marginTop: theme.spacing(3),
+    width: '100%',
+    background: theme.palette.grey[200]
   }
 }));
 
@@ -41,6 +48,7 @@ export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
   const toggleExpand = () => {
     setExpand(!isExpanded);
   };
+
   return (
     <Card className={classes.root}>
       <div className={classes.header}>
@@ -56,6 +64,9 @@ export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
       </div>
       <Collapse in={isExpanded}>
         <SummaryCharts />
+        <Button onClick={toggleExpand} className={classes.collapseButton}>
+          <ExpandLessIcon />
+        </Button>
       </Collapse>
     </Card>
   );

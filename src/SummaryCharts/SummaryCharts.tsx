@@ -4,10 +4,9 @@ import { TaskItemInfo } from "src/components/AddItemForm/AddItemForm";
 import { BarChart } from "src/components/BarChart/BarChart";
 import { PieChart } from "src/components/PieChart/PieChart";
 import { getData } from "src/pages/Stats";
+import { isMobile } from "src/platform/platform";
 import { UserContext } from "src/Providers/UserProvider";
-import {
-  getSumDurationByCategory
-} from "src/utils/getSumDurationByCategory";
+import { getSumDurationByCategory } from "src/utils/getSumDurationByCategory";
 import { getUniqueCategories } from "src/utils/getUniqueCategories";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -17,9 +16,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+const useMobileStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "column"
+  }
+}));
+
 export const SummaryCharts: React.FC = () => {
   const user = React.useContext(UserContext);
   const classes = useStyles();
+  const classesMobile = useMobileStyles();
   const [taskItems, setItems] = React.useState<TaskItemInfo[]>([]);
 
   React.useEffect(() => {
@@ -34,6 +41,19 @@ export const SummaryCharts: React.FC = () => {
     taskItems,
     uniqueCategories
   );
+  if (isMobile()) {
+    return (
+      <div className={classesMobile.root}>
+        <div>
+          <PieChart labels={uniqueCategories} data={sumDurationByCategory} />
+        </div>
+        <br />
+        <div>
+          <BarChart labels={labels} data={data} />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={classes.root}>
       <div>
