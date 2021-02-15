@@ -32,16 +32,14 @@ export const SummaryCharts: React.FC<SummaryChartsProps> = ({isMobileVariant, da
   const classes = useStyles();
   const classesMobile = useMobileStyles();
   const [taskItems, setItems] = React.useState<TaskItemInfo[]>([]);
-
-  const oneDayPrior =new Date(dateString).setDate(new Date(dateString).getDate()-1)
+  const today =new Date(dateString).setDate(new Date(dateString).getDate()+ 0)
   const oneDayAfter = new Date(dateString).setDate(new Date(dateString).getDate()+1)
-
   React.useEffect(() => {
     const unsub = db
       .collection("userItems")
       .doc(demoUserId || user?.uid)
       .collection("activities")
-      .where("createdTime", ">", oneDayPrior)
+      .where("createdTime", ">=", today)
       .where("createdTime", "<", oneDayAfter)
       .orderBy("createdTime", "desc")
       .onSnapshot(querySnapshot => {
@@ -49,7 +47,7 @@ export const SummaryCharts: React.FC<SummaryChartsProps> = ({isMobileVariant, da
         setItems(data as TaskItemInfo[]);
       });
     return () => unsub();
-  }, [demoUserId, user?.uid, oneDayPrior, oneDayAfter]);
+  }, [demoUserId, user?.uid, today, oneDayAfter]);
   const labels = taskItems.map(item => item.createdLocalTime);
   const data = taskItems.map(item => item.activityDuration);
   const uniqueCategories = getUniqueCategories(taskItems);
