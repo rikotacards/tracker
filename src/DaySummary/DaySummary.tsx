@@ -52,7 +52,7 @@ export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
   return (
     <Card className={classes.root}>
       <div className={classes.header}>
-        <Typography variant="h6">{dateString}</Typography>
+        <Typography color='primary' variant="h5">{dateString}</Typography>
         <IconButton
           onClick={toggleExpand}
           className={clsx(classes.expand, {
