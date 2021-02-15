@@ -63,7 +63,7 @@ export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
         </IconButton>
       </div>
       <Collapse in={isExpanded}>
-        <SummaryCharts />
+        <SummaryCharts dateString={dateString}/>
         <Button onClick={toggleExpand} className={classes.collapseButton}>
           <ExpandLessIcon />
         </Button>

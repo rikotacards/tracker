@@ -4,7 +4,6 @@ import { TaskItemInfo } from "src/components/AddItemForm/AddItemForm";
 import { BarChart } from "src/components/BarChart/BarChart";
 import { PieChart } from "src/components/PieChart/PieChart";
 import { db } from "src/firebase/firebaseutils";
-import { getData } from "src/pages/Stats";
 import { isMobile } from "src/platform/platform";
 import { UserContext } from "src/Providers/UserProvider";
 import { getSumDurationByCategory } from "src/utils/getSumDurationByCategory";
@@ -23,21 +22,26 @@ const useMobileStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column"
   }
 }));
-
-export const SummaryCharts: React.FC = () => {
+interface SummaryChartsProps {
+  dateString: string;
+}
+export const SummaryCharts: React.FC<SummaryChartsProps> = ({dateString}) => {
   const user = React.useContext(UserContext);
   const classes = useStyles();
   const classesMobile = useMobileStyles();
   const [taskItems, setItems] = React.useState<TaskItemInfo[]>([]);
+
+  const oneDayPrior =new Date(dateString).setDate(new Date(dateString).getDate()-1)
+  const oneDayAfter = new Date(dateString).setDate(new Date(dateString).getDate()+1)
 
   React.useEffect(() => {
     const unsub = db
       .collection("userItems")
       .doc(user?.uid)
       .collection("activities")
-      .where("createdLocalDate", ">", "14/02/2021")
-      .where("createdLocalDate", "<", "16/02/2021")
-      .orderBy("createdLocalDate", "desc")
+      .where("createdTime", ">", oneDayPrior)
+      .where("createdTime", "<", oneDayAfter)
+      .orderBy("createdTime", "desc")
       .onSnapshot(querySnapshot => {
         const data = querySnapshot.docs.map(doc => doc.data());
         setItems(data as TaskItemInfo[]);

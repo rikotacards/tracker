@@ -23,7 +23,7 @@ export interface TaskItemInfo {
   activityDuration: number;
   category: string;
   createdLocalTime: string;
-  createdLocalDate: string;
+  createdLocalDate: string; // new Date().toDateString() -> standardized
   createdTime: number;
   pausedTime?: number;
   isPaused: boolean;
@@ -68,7 +68,7 @@ export const AddItemForm: React.FC<TaskItemFormProps> = props => {
   const classes = useStyles();
 
   const createdLocalTime = date.toLocaleTimeString();
-  const createdLocalDate = date.toLocaleDateString();
+  const createdLocalDate = date.toDateString()
   const [form, setForm] = React.useState<TaskItemInfo>(initialFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
