@@ -5,6 +5,9 @@ import {
   Button,
   TextField
 } from "@material-ui/core";
+import "firebase/auth";
+import firebase from "firebase/app";
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
@@ -61,24 +64,40 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const SignIn: React.FC = () => {
   const classes = useStyles();
-  const user = React.useContext(UserContext);
   const history = useHistory();
-  if (user) {
-    history.push("/");
-  }
+  const user = React.useContext(UserContext);
+
+  const provider = new firebase.auth.GoogleAuthProvider();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const signInGooglehandler = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+      console.log('here')
+      console.log(user)
+      console.log('pusehd')
+      return firebase.auth().signInWithPopup(provider).then(() => {
+        console.log('LOGGED IN')
+        history.push('/')
+      })
+    })
+    .catch((er) => {console.error(er)})
+
+  }
   const signInWithEmailAndPasswordHandler = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     email: string,
     password: string
   ) => {
     event.preventDefault();
-    auth.signInWithEmailAndPassword(email, password).catch(error => {
-      setError("Error signing in with password and email!");
-      console.error("Error signing in with password and email", error);
-    });
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => {
+      
+      return firebase.auth().signInWithEmailAndPassword(email, password);
+    })
+    .catch((er) => {console.error(er)})
   };
 
   const onChangeHandler = (
@@ -139,7 +158,7 @@ export const SignIn: React.FC = () => {
         </div>
         <Button
           className={classes.signInWithGoogleButton}
-          onClick={signInWithGoogle}
+          onClick={signInGooglehandler}
         >
           <img
           alt='google-signin'
@@ -149,7 +168,7 @@ export const SignIn: React.FC = () => {
         </Button>
         <div className={classes.noAccountForgotPassword}>
           <Typography variant="caption">Don't have an account? </Typography>
-          <Link to="signUp" className="text-blue-500 hover:text-blue-600">
+          <Link to="/signUp" className="text-blue-500 hover:text-blue-600">
             <Typography variant="caption"> Sign up</Typography>
           </Link>{" "}
           <br />{" "}

@@ -48,9 +48,7 @@ export const SignUp: React.FC = () => {
   const classes = useStyles();
   const user = React.useContext(UserContext);
   const history = useHistory();
-  if (user) {
-    history.push("/");
-  }
+ 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

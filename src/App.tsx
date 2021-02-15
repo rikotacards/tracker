@@ -15,6 +15,7 @@ import { SignUp } from "./pages/SignUp";
 
 export const App = () => {
   const user = React.useContext(UserContext);
+ 
   return (
     <UserProvider>
       <TimerControlProvider>
@@ -26,13 +27,13 @@ export const App = () => {
             </Route>
             <Route exact path="/signIn">
               {user ? <Redirect to="/" /> : <SignIn />}
-              <SignIn />
             </Route>
             <Route exact path="/signUp">
               {user ? <Redirect to="/" /> : <SignUp />}
             </Route>
-            <Route path="/">
-              <Home />
+            <Route exact path="/">
+              <Home/>
+            {/* {user ? <Home/> : <SignIn />} */}
             </Route>
           </Switch>
         </Router>

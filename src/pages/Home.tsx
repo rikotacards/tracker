@@ -1,29 +1,39 @@
-import { Button } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
+import { Skeleton } from "@material-ui/lab";
 import React from "react";
-import {
-  AddItemForm
-} from "src/components/AddItemForm/AddItemForm";
+import { AddItemForm } from "src/components/AddItemForm/AddItemForm";
 import { TaskItemList } from "src/components/TaskItemList/TaskItemList";
-import { Link } from "react-router-dom";
 import { UserContext } from "src/Providers/UserProvider";
+import { SignIn } from "./SignIn";
+
 
 export const Home: React.FC = () => {
   const user = React.useContext(UserContext);
-    if(!user){
-        return(
-            <Button>
-            <Link to="/signIn">Login</Link>
-          </Button> 
-        )
-    }
+  React.useEffect(() => {}, [user]);
+  if (!user) {
+    return <SignIn />;
+  }
   return (
     <div>
       <div>
-        <AddItemForm />
         {!user.uid! ? (
-          "loading"
+
+          <Box>
+            <Skeleton variant="rect" width="100%" animation="wave">
+              <Box style={{ height: "120px" }} />
+            </Skeleton>
+            <Skeleton width="100%" variant='text' animation="wave" >
+            </Skeleton>
+            <Skeleton width="100%" variant='text' animation="wave" >
+            </Skeleton>
+            <Skeleton width="100%" variant='text' animation="wave" >
+            </Skeleton>
+          </Box>
         ) : (
-          <TaskItemList userId={user.uid} />
+          <div>
+            <AddItemForm />
+            <TaskItemList userId={user.uid} />
+          </div>
         )}
       </div>
     </div>
