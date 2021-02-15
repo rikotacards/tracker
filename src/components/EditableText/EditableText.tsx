@@ -1,4 +1,3 @@
-import { TextField } from "@material-ui/core";
 import React from "react";
 import { updateActivityField } from "src/firebase/dbActions";
 
@@ -18,37 +17,43 @@ export const EditableText: React.FC<EditableTextProps> = ({
   userId
 }) => {
   const [isEditing, setEdit] = React.useState(false);
-  const [doneEdit, setDoneEdit] = React.useState(false)
-  const [editingText, setText] = React.useState(text)
+  const [editingText, setText] = React.useState(text);
   const toggleEdit = () => {
     setEdit(!isEditing);
-    updateActivityField({userId, createdTime, field: 'activity', text: editingText}).then((data) => {
-        setDoneEdit(true)
+    updateActivityField({
+      userId,
+      createdTime,
+      field: "activity",
+      text: editingText
     })
-
   };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if(event.key === 'Enter' || event.key === 'Escape' || event.key === 'Tab'){
-          toggleEdit()
-      }
-
+    if (
+      event.key === "Enter" ||
+      event.key === "Escape" ||
+      event.key === "Tab"
+    ) {
+      toggleEdit();
+    }
   };
-const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value)
-}
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
   return (
-    <div >
+    <div>
       {isEditing ? (
-            <input
-            type='text'
-            name='activity'
-            onKeyDown={handleKeyDown}
-            value={editingText}
-            onChange={onChange}
-            onBlur={toggleEdit}
-            />
+        <input
+          type="text"
+          name="activity"
+          onKeyDown={handleKeyDown}
+          value={editingText}
+          onChange={onChange}
+          onBlur={toggleEdit}
+        />
       ) : (
-        <div onClick={toggleEdit} onBlur={toggleEdit}>{children}</div>
+        <div onClick={toggleEdit} onBlur={toggleEdit}>
+          {children}
+        </div>
       )}
     </div>
   );

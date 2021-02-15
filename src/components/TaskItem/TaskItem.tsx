@@ -17,6 +17,8 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Grow from "@material-ui/core/Grow";
 import clsx from "clsx";
 import { EditableText } from "../EditableText/EditableText";
+import { isMobile } from "src/platform/platform";
+import { TaskItemMobile } from "../TaskItemMobile/TaskItemMobile";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -74,6 +76,10 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
   const toggleDeleteButton = () => {
     setDeleteClicked(!isDeleteClicked);
   };
+
+  if(isMobile()){
+    return <TaskItemMobile {...props}/>
+  }
 
   return (
     <Card className={classes.root}>

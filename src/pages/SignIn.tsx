@@ -3,7 +3,6 @@ import {
   makeStyles,
   Theme,
   Button,
-  Card,
   TextField
 } from "@material-ui/core";
 import React, { useState } from "react";
@@ -143,6 +142,7 @@ export const SignIn: React.FC = () => {
           onClick={signInWithGoogle}
         >
           <img
+          alt='google-signin'
             className={classes.googleSignInButton}
             src={GoogleSignIn}
           />
