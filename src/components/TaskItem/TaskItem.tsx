@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     padding: theme.spacing(1)
   },
+  categoryContainer: {
+    width: "100px",
+    display: "flex",
+    justifyContent: "center"
+  },
   itemSpacing: {
     marginRight: theme.spacing(1)
   },
@@ -35,11 +40,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex"
   },
   activityContainer: {
-    minWidth: "100px",
-    width: "150px",
-    // border: '1px solid black',
+    width: "200px",
     padding: theme.spacing(0.7)
-    // borderRadius: theme.spacing(2),
   }
 }));
 export const TaskItem: React.FC<TaskItemInfo> = props => {
@@ -68,15 +70,16 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
 
   return (
     <Card className={classes.root}>
-      <div>
-      <div >
-        <Typography variant="caption">Started: </Typography>
+        <div>
+          <Typography variant="caption">Started: </Typography>
           <Typography variant="caption" className={classes.itemSpacing}>
-           {createdLocalTime}
+            {createdLocalTime}
           </Typography>
-      </div>
-      </div>
+        </div>
+    
+      <div className={classes.categoryContainer}>
         <Chip className={classes.itemSpacing} label={category} />
+      </div>
       <div className={clsx(classes.activityContainer, classes.itemSpacing)}>
         <Typography variant="body2" className={classes.itemSpacing}>
           {activity}
@@ -84,11 +87,7 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
       </div>
       <Button
         variant="outlined"
-        className={clsx(
-          classes.itemSpacing,
-          classes.timeDisplay,
-          isPaused
-        )}
+        className={clsx(classes.itemSpacing, classes.timeDisplay, isPaused)}
       >
         <TimeDisplay
           isResumed={isResumed}

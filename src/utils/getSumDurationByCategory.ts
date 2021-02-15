@@ -1,17 +1,5 @@
 import { TaskItemInfo } from "src/components/AddItemForm/AddItemForm"
 
-export const getUniqueCategories = (items: TaskItemInfo[]) => {
-    const categories = {} as Record<string, boolean> 
-    const uniqueCategories: string[] = []
-    items.forEach((item) => {
-        if(!categories[item.category.toLowerCase()]){
-            categories[item.category.toLowerCase()] = true
-            uniqueCategories.push(item.category.toLowerCase())
-        }
-    })
-    return uniqueCategories
-}
-
 // Used for charts
 export const getSumDurationByCategory = (items: TaskItemInfo[], uniqueCategories: string[]) => {
     const categorySums = items.reduce((categories: Record<string, number>, item) => {

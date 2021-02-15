@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1)
   },
   header: {
-      display: 'flex',
-      alignItems: 'center'
+    display: "flex",
+    alignItems: "center"
   },
   expand: {
     transform: "rotate(0deg)",
@@ -42,21 +42,21 @@ export const DaySummary: React.FC<DaySummaryProps> = ({ dateString }) => {
     setExpand(!isExpanded);
   };
   return (
-      <Card className={classes.root}>
-        <div className={classes.header}>
-          <Typography variant="body1">{dateString}</Typography>
-          <IconButton
-            onClick={toggleExpand}
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: isExpanded
-            })}
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-        </div>
-        <Collapse in={isExpanded}>
-            <SummaryCharts/>
-        </Collapse>
-      </Card>
+    <Card className={classes.root}>
+      <div className={classes.header}>
+        <Typography variant="h6">{dateString}</Typography>
+        <IconButton
+          onClick={toggleExpand}
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: isExpanded
+          })}
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+      </div>
+      <Collapse in={isExpanded}>
+        <SummaryCharts />
+      </Collapse>
+    </Card>
   );
 };

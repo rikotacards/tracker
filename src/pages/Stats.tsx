@@ -5,11 +5,8 @@ import { db } from "src/firebase/firebaseutils";
 import { UserContext } from "src/Providers/UserProvider";
 import { BarChart } from "src/components/BarChart/BarChart";
 import { PieChart } from "src/components/PieChart/PieChart";
-import {
-  getUniqueCategories,
-  getSumDurationByCategory
-} from "src/utils/chartHelpers";
-
+import { getSumDurationByCategory } from "src/utils/getSumDurationByCategory";
+import { getUniqueCategories } from "src/utils/getUniqueCategories";
 
 export const getData = async (userId: string) => {
   const query = db

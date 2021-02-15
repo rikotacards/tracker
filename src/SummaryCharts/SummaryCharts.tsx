@@ -6,14 +6,13 @@ import { PieChart } from "src/components/PieChart/PieChart";
 import { getData } from "src/pages/Stats";
 import { UserContext } from "src/Providers/UserProvider";
 import {
-  getUniqueCategories,
   getSumDurationByCategory
-} from "src/utils/chartHelpers";
+} from "src/utils/getSumDurationByCategory";
+import { getUniqueCategories } from "src/utils/getUniqueCategories";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: "flex",
-    // maxWidth: "400px",
     justifyContent: "space-around"
   }
 }));
