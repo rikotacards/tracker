@@ -96,7 +96,7 @@ export const AddItemForm: React.FC<TaskItemFormProps> = props => {
       <div className={classes.itemLayout}>
         <Typography variant="caption">Today's Date</Typography>
         <Typography variant="body2" className={classes.itemSpacing}>
-          {createdLocalDate}
+          {date.toLocaleDateString()}
         </Typography>
       </div>
       <form noValidate autoComplete="off" id="task-item-form">
