@@ -7,14 +7,14 @@ import {
   Redirect
 } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { SignIn } from "./components/SignIn/SignIn";
+import { SignIn } from "./pages/SignIn";
 import { TimerControlProvider } from "./Providers/TimerControlProvider";
 import { Appbar } from "./components/Appbar/Appbar";
 import { StatsPage } from "./pages/Stats";
+import { SignUp } from "./pages/SignUp";
 
 export const App = () => {
   const user = React.useContext(UserContext);
-
   return (
     <UserProvider>
       <TimerControlProvider>
@@ -26,6 +26,10 @@ export const App = () => {
             </Route>
             <Route exact path="/signIn">
               {user ? <Redirect to="/" /> : <SignIn />}
+              <SignIn />
+            </Route>
+            <Route exact path="/signUp">
+              {user ? <Redirect to="/" /> : <SignUp />}
             </Route>
             <Route path="/">
               <Home />
