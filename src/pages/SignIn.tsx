@@ -3,10 +3,12 @@ import {
   makeStyles,
   Theme,
   Button,
-  TextField
+  TextField,
+  LinearProgress
 } from "@material-ui/core";
 import "firebase/auth";
 import firebase from "firebase/app";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    justifyContent: 'center',
+    justifyContent: "center"
   },
   root: {
     display: "flex",
@@ -58,44 +60,70 @@ const useStyles = makeStyles((theme: Theme) => ({
     border: "1px solid",
     padding: theme.spacing(1),
     borderRadius: theme.spacing(0.5)
+  },
+  loading: {
+    display: "flex",
+    alignItem: "center",
+    justifyContent: "center"
   }
 }));
 
 export const SignIn: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-
+  const [isSignInProcessing, setSignInProcessing] = React.useState(false);
+  const [isSignInSuccess, setSignInSuccess] = React.useState(false);
   const provider = new firebase.auth.GoogleAuthProvider();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const signInGooglehandler = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-
-      return firebase.auth().signInWithPopup(provider).then(() => {
-        history.push('/')
+    auth
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        setSignInProcessing(true);
+        return firebase
+          .auth()
+          .signInWithPopup(provider)
+          .then(() => {
+            setSignInProcessing(false);
+            setSignInSuccess(true);
+            history.push("/");
+          });
       })
-    })
-    .catch((er) => {console.error(er)})
-
-  }
+      .catch(er => {
+        console.error(er);
+      });
+  };
   const signInWithEmailAndPasswordHandler = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     email: string,
     password: string
   ) => {
     event.preventDefault();
-    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => {
-      
-      return firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-        history.push('/')
+    auth
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        setSignInProcessing(true);
 
+        return firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(() => {
+            setSignInProcessing(false);
+            setSignInProcessing(true);
+            history.push("/");
+          });
       })
-    })
-    .catch((er) => {console.error(er)})
+      .catch(er => {
+        setSignInProcessing(false);
+        setSignInProcessing(false);
+        setError("Error Signing up with email and password");
+        console.error(er);
+      });
   };
 
   const onChangeHandler = (
@@ -109,74 +137,95 @@ export const SignIn: React.FC = () => {
       setPassword(value);
     }
   };
+  if (isSignInSuccess || isSignInProcessing) {
+    return (
+      <div className={classes.loading}>
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className={classes.container}>
       <div className={classes.root}>
         {error !== null && <Typography variant="caption">{error}</Typography>}
-        <form className={classes.emailPasswordContainer}>
-          <TextField
-            type="email"
-            className={classes.emailPasswordInputWrapper}
-            name="userEmail"
-            value={email}
-            placeholder="Email"
-            id="userEmail"
-            size="small"
-            variant="outlined"
-            error={!!error}
-            onChange={event => onChangeHandler(event)}
-          />
-          <TextField
-            type="password"
-            className={classes.emailPasswordInputWrapper}
-            name="userPassword"
-            value={password}
-            placeholder="Password"
-            id="userPassword"
-            size="small"
-            variant="outlined"
-            error={!!error}
-            onChange={event => onChangeHandler(event)}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            className={classes.signInButton}
-            onClick={event => {
-              signInWithEmailAndPasswordHandler(event, email, password);
-            }}
-          >
-            Sign in
+        {isSignInProcessing ? null : (
+          <>
+            <form className={classes.emailPasswordContainer}>
+              <TextField
+                type="email"
+                className={classes.emailPasswordInputWrapper}
+                name="userEmail"
+                value={email}
+                placeholder="Email"
+                id="userEmail"
+                size="small"
+                variant="outlined"
+                error={!!error}
+                onChange={event => onChangeHandler(event)}
+              />
+              <TextField
+                type="password"
+                className={classes.emailPasswordInputWrapper}
+                name="userPassword"
+                value={password}
+                placeholder="Password"
+                id="userPassword"
+                size="small"
+                variant="outlined"
+                error={!!error}
+                onChange={event => onChangeHandler(event)}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.signInButton}
+                onClick={event => {
+                  signInWithEmailAndPasswordHandler(event, email, password);
+                }}
+              >
+                Sign in
+              </Button>
+            </form>
+            <div className={classes.orText}>
+              <Typography className={classes.orText}>or</Typography>
+            </div>
+          </>
+        )}
+        {isSignInProcessing ? (
+          <CircularProgress />
+        ) : isSignInSuccess ? (
+          <Button color="primary" size="medium" variant="contained">
+            Welcome
           </Button>
-        </form>
-        <div className={classes.orText}>
-          <Typography className={classes.orText}>or</Typography>
-        </div>
-        <Button
-          className={classes.signInWithGoogleButton}
-          onClick={signInGooglehandler}
-        >
-          <img
-          alt='google-signin'
-            className={classes.googleSignInButton}
-            src={GoogleSignIn}
-          />
-        </Button>
-        <div className={classes.noAccountForgotPassword}>
-          <Typography variant="caption">Don't have an account? </Typography>
-          <Link to="signUp" className="text-blue-500 hover:text-blue-600">
-            <Typography variant="caption"> Sign up</Typography>
-          </Link>{" "}
-          <br />{" "}
-          <Link
-            to="passwordReset"
-            className="text-blue-500 hover:text-blue-600"
+        ) : (
+          <Button
+            className={classes.signInWithGoogleButton}
+            onClick={signInGooglehandler}
           >
-            <Typography variant="caption">Forgot Password?</Typography>
-          </Link>
-        </div>
+            <img
+              alt="google-signin"
+              className={classes.googleSignInButton}
+              src={GoogleSignIn}
+            />
+          </Button>
+        )}
+        {!isSignInSuccess && !isSignInProcessing ? (
+          <div className={classes.noAccountForgotPassword}>
+            <Typography variant="caption">Don't have an account? </Typography>
+            <Link to="signUp" className="text-blue-500 hover:text-blue-600">
+              <Typography variant="caption"> Sign up</Typography>
+            </Link>{" "}
+            <br />{" "}
+            <Link
+              to="passwordReset"
+              className="text-blue-500 hover:text-blue-600"
+            >
+              <Typography variant="caption">Forgot Password?</Typography>
+            </Link>
+          </div>
+        ) : null}
       </div>
     </div>
   );

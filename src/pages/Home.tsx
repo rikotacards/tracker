@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Typography, makeStyles, Theme } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import React from "react";
 import { AddItemForm } from "src/components/AddItemForm/AddItemForm";
@@ -6,8 +6,27 @@ import { TaskItemList } from "src/components/TaskItemList/TaskItemList";
 import { UserContext } from "src/Providers/UserProvider";
 import { SignIn } from "./SignIn";
 
+export const getActivitiesSkeleton = (component: JSX.Element, amount: number) => {
+  const skeletons = []
+  for(let i = 0; i < amount; i++){
+    skeletons.push(
+      component
+    )
+  }
+  return skeletons
+}
 
+
+export const useSkeletonStyles = makeStyles((theme: Theme) => ({
+  skeletonContainer: {
+    marginBottom: theme.spacing(0.5),
+  },
+  skeleton: {
+    borderRadius: theme.spacing(0.7)
+  }
+}))
 export const Home: React.FC = () => {
+  const classes = useSkeletonStyles()
   const user = React.useContext(UserContext);
   React.useEffect(() => {}, [user]);
   if (!user) {
@@ -17,18 +36,18 @@ export const Home: React.FC = () => {
     <div>
       <div>
         {!user.uid! ? (
-
-          <Box>
-            <Skeleton variant="rect" width="100%" animation="wave">
-              <Box style={{ height: "120px" }} />
-            </Skeleton>
-            <Skeleton width="100%" variant='text' animation="wave" >
-            </Skeleton>
-            <Skeleton width="100%" variant='text' animation="wave" >
-            </Skeleton>
-            <Skeleton width="100%" variant='text' animation="wave" >
-            </Skeleton>
-          </Box>
+          <>
+          {getActivitiesSkeleton(
+            <div className={classes.skeletonContainer}>
+            <Skeleton
+            className={classes.skeleton}
+              animation={"wave"}
+              variant="rect"
+              height={70}
+            ></Skeleton>
+          </div>, 8
+          )}
+          </>
         ) : (
           <div>
             <AddItemForm />

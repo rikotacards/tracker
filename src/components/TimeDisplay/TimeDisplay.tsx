@@ -76,7 +76,7 @@ export const TimeDisplay: React.FC<TimeDisplayProps> = props => {
 
   
   return (
-    <Typography variant='body2' color={isTimerPaused ? undefined: 'primary'}>
+    <Typography variant='body2' color={isTimerPaused ? undefined: 'secondary'}>
       {time.hours}:{time.minutes}:{time.seconds}
     </Typography>
 

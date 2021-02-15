@@ -105,7 +105,7 @@ export const AddItemForm: React.FC<TaskItemFormProps> = props => {
           onChange={handleChange}
           id="category"
           helperText="E.g. 'work', 'learn'"
-          label="Category"
+          label="Tag name"
           placeholder="Learn"
         />
         <TextField
@@ -113,8 +113,8 @@ export const AddItemForm: React.FC<TaskItemFormProps> = props => {
           onChange={handleChange}
           id="activity"
           label="Activity"
-          helperText="Some details"
-          placeholder="How"
+          helperText="What are you doing?"
+          placeholder="Creating pitch deck..."
         />
       </form>
 

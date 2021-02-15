@@ -1,8 +1,9 @@
-import { makeStyles, Theme } from "@material-ui/core";
+import { makeStyles, Theme, Typography } from "@material-ui/core";
 import React from "react";
 import { TaskItemInfo } from "src/components/AddItemForm/AddItemForm";
 import { BarChart } from "src/components/BarChart/BarChart";
 import { PieChart } from "src/components/PieChart/PieChart";
+import { db } from "src/firebase/firebaseutils";
 import { getData } from "src/pages/Stats";
 import { isMobile } from "src/platform/platform";
 import { UserContext } from "src/Providers/UserProvider";
@@ -30,9 +31,18 @@ export const SummaryCharts: React.FC = () => {
   const [taskItems, setItems] = React.useState<TaskItemInfo[]>([]);
 
   React.useEffect(() => {
-    getData(user?.uid || "0").then(result => {
-      setItems(result);
-    });
+    const unsub = db
+      .collection("userItems")
+      .doc(user?.uid)
+      .collection("activities")
+      .where("createdLocalDate", ">", "14/02/2021")
+      .where("createdLocalDate", "<", "16/02/2021")
+      .orderBy("createdLocalDate", "desc")
+      .onSnapshot(querySnapshot => {
+        const data = querySnapshot.docs.map(doc => doc.data());
+        setItems(data as TaskItemInfo[]);
+      });
+    return () => unsub();
   }, [user?.uid]);
   const labels = taskItems.map(item => item.createdLocalTime);
   const data = taskItems.map(item => item.activityDuration);
@@ -41,6 +51,16 @@ export const SummaryCharts: React.FC = () => {
     taskItems,
     uniqueCategories
   );
+  if (!uniqueCategories?.length) {
+    return (
+      <div>
+        <Typography>
+          Not enough data. You can start seeing data after you've completed
+          timing a task.
+        </Typography>
+      </div>
+    );
+  }
   if (isMobile()) {
     return (
       <div className={classesMobile.root}>

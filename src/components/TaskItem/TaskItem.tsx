@@ -19,6 +19,7 @@ import clsx from "clsx";
 import { EditableText } from "../EditableText/EditableText";
 import { isMobile } from "src/platform/platform";
 import { TaskItemMobile } from "../TaskItemMobile/TaskItemMobile";
+import { Tag } from "../Tag/Tag";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -28,9 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1)
   },
   categoryContainer: {
-    width: "100px",
+    width: "80px",
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "flex-start"
   },
   itemSpacing: {
     marginRight: theme.spacing(1)
@@ -91,7 +92,7 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
       </div>
 
       <div className={classes.categoryContainer}>
-        <Chip className={classes.itemSpacing} label={category} />
+        <Tag label={category} />
       </div>
       <div className={clsx(classes.activityContainer, classes.itemSpacing)}>
         <EditableText

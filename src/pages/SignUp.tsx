@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { auth, signInWithGoogle } from "../firebase/firebaseutils";
+import { auth } from "../firebase/firebaseutils";
 import { useHistory } from "react-router-dom";
 import { generateUserDocument } from "../firebase/dbActions";
 import {
@@ -8,16 +8,24 @@ import {
   makeStyles,
   Theme,
   Button,
-  TextField
+  TextField,
+  CircularProgress
 } from "@material-ui/core";
 import GoogleSignIn from "src/assets/googleSignIn/google-signIn-blue-2x.png";
-
+import "firebase/auth";
+import firebase from "firebase/app";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
     justifyContent: "center"
+  },
+  formContainer: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   signUpContainer: {
     display: "flex",
@@ -37,16 +45,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%"
   },
   input: {
-    margin: theme.spacing(1)
+    marginBottom: theme.spacing(1)
   },
   signUpText: {
     marginTop: theme.spacing(2)
+  },
+  loading: {
+    display: "flex",
+    alignItem: "center",
+    justifyContent: "center"
   }
 }));
 export const SignUp: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
+  const provider = new firebase.auth.GoogleAuthProvider();
 
+  const [isSignInProcessing, setSignInProcessing] = React.useState(false);
+  const [isSignInSuccess, setSignInSuccess] = React.useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -61,8 +77,14 @@ export const SignUp: React.FC = () => {
       const { user } = await auth.createUserWithEmailAndPassword(
         email,
         password
-      );
+      ).then((user) => {
+        setSignInProcessing(true);
+        return user
+
+      })
       user && generateUserDocument(user, { displayName }).then(() => {
+        setSignInProcessing(false);
+            setSignInSuccess(true);
         history.push('/')
       })
     } catch (error) {
@@ -86,18 +108,47 @@ export const SignUp: React.FC = () => {
       setDisplayName(value);
     }
   };
+
+  const signInGooglehandler = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    auth
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        setSignInProcessing(true);
+        return firebase
+          .auth()
+          .signInWithPopup(provider)
+          .then(() => {
+            setSignInProcessing(false);
+            setSignInSuccess(true);
+            history.push("/");
+          });
+      })
+      .catch(er => {
+        console.error(er);
+      });
+  };
+
+  if (isSignInSuccess || isSignInProcessing) {
+    return (
+      <div className={classes.loading}>
+        <CircularProgress />
+      </div>
+    );
+  }
   return (
     <div className={classes.container}>
-      <Typography variant="body2" className={classes.signUpText}>
-        Sign Up
+      <Typography color='primary' variant="h6" className={classes.signUpText}>
+       <b> Sign Up</b>
       </Typography>
       <div className={classes.signUpContainer}>
         {error !== null && (
-          <div className="py-4 bg-red-600 w-full text-white text-center mb-3">
+          <Typography variant='caption'>
             {error}
-          </div>
+          </Typography>
         )}
-        <form className={classes.signUpContainer}>
+        <form className={classes.formContainer} >
           <TextField
             className={classes.input}
             type="text"
@@ -149,7 +200,7 @@ export const SignUp: React.FC = () => {
         <Typography variant="caption">or</Typography>
         <Button
           className={classes.signInWithGoogleButton}
-          onClick={signInWithGoogle}
+          onClick={signInGooglehandler}
         >
           <img
             alt="google-signin"

@@ -15,27 +15,25 @@ export const getData = async (userId: string) => {
     .collection("activities")
     .where("createdLocalDate", ">", "14/02/2021")
     .where("createdLocalDate", "<", "16/02/2021")
-    .orderBy("createdLocalDate", "desc");
+    .orderBy("createdLocalDate", "desc")
+    .onSnapshot((querySnapshot) => {
 
-  const querySnapshot = await query.get();
+      const data = querySnapshot.docs.map(doc => doc.data())
+      return data
+    })
 
-  const returnData: TaskItemInfo[] = [];
-
-  querySnapshot.forEach(doc => {
-    returnData.push(doc.data() as TaskItemInfo);
-  });
-  return returnData;
+  return query;
 };
 
 export const StatsPage: React.FC = () => {
   const user = React.useContext(UserContext);
   const [taskItems, setItems] = React.useState<TaskItemInfo[]>([]);
 
-  React.useEffect(() => {
-    getData(user?.uid || "0").then(result => {
-      setItems(result);
-    });
-  }, [user?.uid]);
+  // React.useEffect(() => {
+  //   getData(user?.uid || "0").then(result => {
+  //     setItems(result);
+  //   });
+  // }, [user?.uid]);
   const labels = taskItems.map(item => item.createdLocalTime);
   const data = taskItems.map(item => item.activityDuration);
   const uniqueCategories = getUniqueCategories(taskItems);
