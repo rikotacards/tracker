@@ -26,10 +26,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: "auto",
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest
-    })
+    }),
+    '& .MuiIconBase-root': {
+      paddingRight:0
+    }
   },
   expandOpen: {
-    transform: "rotate(180deg)"
+    transform: "rotate(180deg)",
+    '& .MuiButtonBase-root': {
+      paddingRight:0
+    }
+  },
+  expandMoreIcon: {
+    '&. MuiButtonBase-root': {
+      paddingRight:0
+    }
   },
   collapseButton: {
     display: "flex",
@@ -56,6 +67,7 @@ export const DaySummary: React.FC<DaySummaryProps> = ({demoUserId, dateString, i
       <div className={classes.header}>
         <Typography color='primary' variant="h5">{dateString}</Typography>
         <IconButton
+        style={{'padding': '0px'}}
           onClick={toggleExpand}
           className={clsx(classes.expand, {
             [classes.expandOpen]: isExpanded

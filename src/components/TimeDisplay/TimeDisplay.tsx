@@ -4,10 +4,27 @@ import { resumeActivityDb, pauseActivityDb } from "../../firebase/dbActions";
 import { TimeControlContext } from "../../Providers/TimerControlProvider";
 import { UserContext } from "../../Providers/UserProvider";
 import { useTimer } from "src/utils/useTimer";
-import { Button, Typography } from "@material-ui/core";
+import { IconButton, Typography } from "@material-ui/core";
 import { Time } from "./Time";
 import { TaskItemInfo } from "../AddItemForm/AddItemForm";
-
+import { makeStyles, Theme } from "@material-ui/core";
+import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+const useStyles = makeStyles((theme: Theme) => ({
+  timeContainer: {
+    padding: theme.spacing(0, 1, 0, 1),
+    border: `1px solid ${theme.palette.grey[400]}`,
+    borderRadius: theme.spacing(0.5)
+  },
+  wrapper: {
+    display: "flex",
+    alignItems: "center"
+  },
+  timeControlContainer: {
+    display: 'flex'
+  },
+}));
 let TimeDisplay: React.FC<Omit<
   TaskItemInfo,
   "createdLocalTime" | "createdLocalDate" | "category" | "activity"
@@ -23,87 +40,38 @@ let TimeDisplay: React.FC<Omit<
     activityDuration = 0,
     isDone
   } = props;
+  const classes = useStyles();
   const timeControl = React.useContext(TimeControlContext);
   const user = React.useContext(UserContext);
   const totalTimeSinceCreation = Date.now() - createdTime;
-
-  console.log(
-    "AT STARTcurrent tie of render\n",
-    new Date(Date.now()),
-    "\ntotalpaused\n",
-    totalPausedTime,
-    "\ntotalPause FORMAT\n",
-    formatTime(totalPausedTime/1000),
-    "\n acticity duration\n",
-    activityDuration,   
-  );
-  console.log("TIME", Math.floor((Date.now() - resumedTime) / 1000));
-  // elapsedTime = current time - create time - time not tracked (resume time - pause time)
-
-  console.log("isTimerPaused", isPaused);
-  console.log(
-    "totalTimeSinceCreation\n",
-    totalTimeSinceCreation / 1000,
-    "\nativityDuratoin\n",
-    activityDuration / 1000,
-    "\ncreateTime\n",
-    createdTime,
-    "\ntotalPauseTime\n",
-    totalPausedTime
-  );
+  const [isResumeClicked, setResume] = React.useState(false);
   const duration =
     activityDuration === 0
       ? totalTimeSinceCreation
       : isPaused
       ? activityDuration
       : Math.floor(Date.now() - createdTime - totalPausedTime);
-  console.log("DURATION", duration);
   const recordedTime = Math.floor(duration / 1000);
 
   const { timer, isActive, handleStart, handlePause, handleResume } = useTimer(
     recordedTime
   );
   const time = formatTime(timer);
-  console.log("time", time);
   const isDoneTime = formatTime(activityDuration / 1000);
 
   const onPause = React.useCallback(() => {
-    console.log("===========ON PAUSE", new Date(Date.now()));
-    const accPausedTime = resumedTime === 0 ? 0 : Date.now() - resumedTime;
-    console.log(
-      "ON PAUSE, TOTAL PAUSE TIME",
-      (Date.now() - resumedTime) / 1000
-    );
-    console.log(
-      "totalpaused",
-      formatTime(Math.floor(totalPausedTime / 1000)),
-      "\n activityDuration",
-      formatTime(Math.floor(activityDuration / 1000))
-    );
     pauseActivityDb({
       userId: user?.uid || "anon",
       createdTime: createdTime,
       pausedTime: Date.now(),
-      activityDuration: Math.floor(Date.now() - createdTime - totalPausedTime),
+      activityDuration: Math.floor(Date.now() - createdTime - totalPausedTime)
     }).then(() => {
       handlePause();
     });
-  }, [
-    handlePause,
-    user?.uid,
-    createdTime,
-    totalPausedTime,
-    resumedTime,
-    activityDuration
-  ]);
+  }, [handlePause, user?.uid, createdTime, totalPausedTime, resumedTime]);
 
   const onResume = React.useCallback(() => {
-    console.log(
-      ">>>>>>>>>>ON RESUME \ntotalpaused",
-      formatTime(totalPausedTime / 1000),
-      "Activity Duration, formatted\n",
-      formatTime(activityDuration / 1000)
-    );
+    setResume(true);
     resumeActivityDb({
       userId: user?.uid || "anon",
       resumedTime: Date.now(),
@@ -112,7 +80,7 @@ let TimeDisplay: React.FC<Omit<
       totalPausedTime: totalPausedTime + Math.floor(Date.now() - pausedTime)
     }).then(() => {
       handleResume();
-    })
+    });
   }, [
     handleResume,
     user?.uid,
@@ -120,40 +88,43 @@ let TimeDisplay: React.FC<Omit<
     pausedTime,
     totalPausedTime,
     activityDuration,
+    isResumeClicked
   ]);
 
   React.useEffect(() => {
-    if (isDone) {
+    if (isPaused) {
       return;
     }
-    if (isResumed && isActive) {
+    if (isActive && isResumed) {
+      return;
+    }
+    if (isDone) {
       return;
     }
 
     if (timeControl.isMostRecentPaused && isMostRecent && pausedTime === 0) {
-      console.log("ON PAUSE FIRED IN EFFECT");
       onPause();
     }
-    
+
     if (isPaused || isActive) {
-      console.log(
-        "RETURN EARLY",
-        "isTimerPaused=",
-        isPaused,
-        "isActive",
-        isActive
-      );
       return;
+    }
+    if (isResumeClicked) {
+      return;
+    }
+    if (isResumed && !isActive && !isPaused) {
+      if (isResumeClicked) {
+        return;
+      }
+      handleResume();
     }
 
     if (!isPaused && !isResumed && !isActive) {
-      console.log("HANDLE STSR FIRED FROM CONDITION");
       handleStart();
       return;
     }
-
-    console.log("MISSED ALL CONDITION, FIRE START");
-    handleStart();
+    // console.log('HANDLE START')
+    // handleStart();
     return () => {
       console.log("MEANT TO DO SOME CLEAN UP");
     };
@@ -168,21 +139,32 @@ let TimeDisplay: React.FC<Omit<
     isActive,
     isResumed,
     isPaused,
-    pausedTime
+    pausedTime,
+    isResumeClicked
   ]);
 
-  if (isDone) {
-    return (
-      <Typography variant="body2">
-        {isDoneTime.hours}:{isDoneTime.minutes}:{isDoneTime.seconds}
-      </Typography>
-    );
-  }
+  // if (isDone) {
+  //   return (
+  //     <Typography variant="body2">
+  //       {isDoneTime.hours}:{isDoneTime.minutes}:{isDoneTime.seconds}
+  //     </Typography>
+  //   );
+  // }
   return (
-    <>
-      <Time isTimerPaused={isPaused} time={time} />
-      <Button onClick={isPaused ? onResume : onPause}>{isPaused ? 'resume' :'pause'}</Button>
-    </>
+    <div className={classes.wrapper}>
+      <div className={classes.timeContainer}>
+        <Time isTimerPaused={isPaused} time={time} />
+      </div>
+      <div>
+        <IconButton style={{'marginLeft': '4px', 'paddingRight': 0}} onClick={isPaused ? onResume : onPause}>
+          {isPaused ? (
+              <PlayCircleOutlineIcon /> 
+          ) : (
+            <PauseCircleOutlineIcon />
+          )}
+        </IconButton>
+      </div>
+    </div>
   );
 };
 

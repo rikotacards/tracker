@@ -6,7 +6,7 @@ import { ActivitieByDateList } from "src/ActivitiesByDateList/ActivitiesByDateLi
 import { groupByDate } from "src/utils/groupByDate";
 import { makeStyles, Theme } from "@material-ui/core";
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import { ActivitiesSkeleton, useSkeletonStyles } from "src/pages/Home";
+import { ActivitiesSkeleton } from "src/pages/Home";
 const useStyles = makeStyles((theme: Theme) => ({
   addNewContainer: {
     padding: theme.spacing(1),
@@ -32,7 +32,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
       .collection("userItems")
       .doc(userId)
       .collection("activities")
-      .orderBy("timestamp", "desc").limit(1)
+      .orderBy("timestamp", "desc").limit(3)
       .onSnapshot(snap => {
         const data = snap.docs.map(doc => doc.data());
         setActivities(data as TaskItemInfo[])

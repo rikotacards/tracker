@@ -79,7 +79,6 @@ export const resumeActivityDb = ({
   activityDuration,
   totalPausedTime
 }: ResumeActivityProps) => {
-  console.log("RESUME TRACKING");
   return db
     .collection("userItems")
     .doc(userId)
@@ -107,7 +106,6 @@ export const pauseActivityDb = ({
   pausedTime,
   activityDuration,
 }: PauseActivityProps) => {
-  console.log("PAUSE TRACKING");
   return db
     .collection("userItems")
     .doc(userId)
@@ -118,6 +116,27 @@ export const pauseActivityDb = ({
       isResumed: false,
       pausedTime: pausedTime,
       activityDuration,
+    });
+};
+
+
+interface toggleDoneActivityProps {
+  userId: string;
+  createdTime: number;
+  isDone: boolean;
+}
+export const setDoneActivityDb = ({
+  userId,
+  createdTime,
+  isDone
+}: toggleDoneActivityProps) => {
+  return db
+    .collection("userItems")
+    .doc(userId)
+    .collection("activities")
+    .doc(`${createdTime}`)
+    .update({
+      isDone: !isDone
     });
 };
 
