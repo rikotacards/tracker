@@ -19,11 +19,11 @@ export const ActivitieByDateList: React.FC<ActivitiesByDateListProps> = ({
   const rendered = activitiesByDate.map((dateGroup, dateGroupIndex) => {
     const { createdTime } = dateGroup[0];
     const dateString = getMsToDateString(createdTime)
-
     const activityLines = dateGroup.map((activityItem, activityItemIndex) => (
       <TaskItem
         key={activityItem.createdTime}
         {...activityItem}
+        // Fix bug here, where if the next day begins, this wont be set properly
         isMostRecent={dateGroupIndex === 0 && activityItemIndex === 1}
       />
     ));

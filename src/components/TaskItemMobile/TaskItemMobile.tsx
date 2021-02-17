@@ -72,15 +72,9 @@ export const TaskItemMobile: React.FC<TaskItemInfo> = props => {
     activity,
     category,
     createdLocalTime,
-    isPaused,
-    pausedTime,
-    isResumed,
-    resumedTime,
-    isMostRecent
   } = props;
   const classes = useStyles();
   const user = React.useContext(UserContext);
-  const currentTime = Date.now();
   const onDelete = () => {
     removeActivity({ userId: user?.uid || "anon", createdTime });
   };
@@ -118,16 +112,10 @@ export const TaskItemMobile: React.FC<TaskItemInfo> = props => {
         </div>
         <Button
           variant="outlined"
-          className={clsx(classes.itemSpacing, classes.timeDisplay, isPaused)}
+          className={clsx(classes.itemSpacing, classes.timeDisplay)}
         >
           <TimeDisplay
-            isResumed={isResumed}
-            createTime={createdTime}
-            isTimerPaused={isPaused}
-            pausedTime={pausedTime}
-            currentTime={currentTime}
-            resumedTime={resumedTime}
-            isMostRecent={isMostRecent}
+            {...props}
           />
         </Button>
         <IconButton onClick={toggleDeleteButton}>

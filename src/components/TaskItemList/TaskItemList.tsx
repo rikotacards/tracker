@@ -6,8 +6,7 @@ import { ActivitieByDateList } from "src/ActivitiesByDateList/ActivitiesByDateLi
 import { groupByDate } from "src/utils/groupByDate";
 import { makeStyles, Theme } from "@material-ui/core";
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import { Skeleton } from "@material-ui/lab";
-import { getActivitiesSkeleton, useSkeletonStyles } from "src/pages/Home";
+import { ActivitiesSkeleton, useSkeletonStyles } from "src/pages/Home";
 const useStyles = makeStyles((theme: Theme) => ({
   addNewContainer: {
     padding: theme.spacing(1),
@@ -25,7 +24,6 @@ export interface TaskItemListProps {
 export const TaskItemList: React.FC<TaskItemListProps> = props => {
   const { userId, demoUserId , isMobileVariant} = props;
   const classes = useStyles();
-  const skeletonClasses = useSkeletonStyles();
   const [activities, setActivities] = React.useState<TaskItemInfo[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -34,7 +32,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
       .collection("userItems")
       .doc(userId)
       .collection("activities")
-      .orderBy("timestamp", "desc")
+      .orderBy("timestamp", "desc").limit(1)
       .onSnapshot(snap => {
         const data = snap.docs.map(doc => doc.data());
         setActivities(data as TaskItemInfo[])
@@ -47,18 +45,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
 
   if(loading){
     return (
-      <>
-      {getActivitiesSkeleton(
-            <div className={skeletonClasses.skeletonContainer}>
-            <Skeleton
-              animation={"wave"}
-              variant="rect"
-              height={70}
-              className={skeletonClasses.skeleton}
-            ></Skeleton>
-          </div>, 8
-          )}
-      </>
+      <ActivitiesSkeleton amount={10}/>
     )
   }
 
@@ -73,9 +60,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
 
 
   return (
-    <div>
       <ActivitieByDateList isMobileVariant={isMobileVariant} activitiesByDate={activitiesByDate} demoUserId={demoUserId}/>
-    </div>
   );
 };
 

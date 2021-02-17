@@ -37,124 +37,141 @@ export const generateUserDocument = async (
   }
   return getUserDocument(user.uid);
 };
-interface AddTrackedItemsProps {
-  userId: string;
-  name: string;
-  activity: string;
-  category: string;
-  createdLocalTime: string;
-  createdLocalDate: string;
-  createdTime: number;
-}
-export const addTrackedItem = ({
-  userId,
-  name,
-  activity,
-  category,
-  createdLocalTime,
-  createdLocalDate,
-  createdTime
-}: AddTrackedItemsProps) => {
+
+export const addTrackedItem = (props: TaskItemInfo & { userId: string }) => {
   db.collection("userItems")
-    .doc(userId)
+    .doc(props.userId)
     .collection("activities")
-    .doc(`${createdTime}`)
+    .doc(`${props.createdTime}`)
     .set({
-      name,
-      activity,
-      category,
-      createdLocalTime,
-      createdLocalDate,
-      createdTime,
+      ...props,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
 };
 
 export const getUserActivities = (userId: string) => {
-    return db
-    .collection('userItems')
+  return db
+    .collection("userItems")
     .doc(userId)
-    .collection('activities')
+    .collection("activities")
     .orderBy("timestamp", "asc")
     .onSnapshot(querySnapshot => {
-        const data: TaskItemInfo[] = [];
-        querySnapshot.forEach(doc => {
-          data.push((doc.data() as TaskItemInfo));
-        });
-        return data;
-    }).toString()      
-}
-export interface PauseActivityProps {
-    userId: string;
-    createdTime: number;
-    pausedTime?: number;
-    state: 'pause' | 'resume'
-    resumedTime?: number;
-    activityDuration?: number;
+      const data: TaskItemInfo[] = [];
+      querySnapshot.forEach(doc => {
+        data.push(doc.data() as TaskItemInfo);
+      });
+      return data;
+    })
+    .toString();
+};
+export interface ResumeActivityProps {
+  userId: string;
+  createdTime: number;
+  resumedTime: number;
+  activityDuration: number;
+  totalPausedTime?: number;
 }
 
-export const setTrackingState = ({userId, createdTime, pausedTime, state, resumedTime, activityDuration}: PauseActivityProps) => {
-  console.log('FIREBASE TRACKING')
-    const updateStateData = {
-        resume: {
-            isResumed: true,
-            isPaused: false,
-            resumedTime: resumedTime
-        },
-        pause: {
-            isPaused: true, 
-            isResumed: false, 
-            pausedTime: pausedTime,
-            activityDuration
-        }
-    }
-    console.log(updateStateData[state])
-    return db
-    .collection('userItems')
+export const resumeActivityDb = ({
+  userId,
+  createdTime,
+  resumedTime,
+  activityDuration,
+  totalPausedTime
+}: ResumeActivityProps) => {
+  console.log("RESUME TRACKING");
+  return db
+    .collection("userItems")
     .doc(userId)
-    .collection('activities')
+    .collection("activities")
     .doc(`${createdTime}`)
-    .update({...updateStateData[state]})
+    .update({
+      isResumed: true,
+      isPaused: false,
+      resumedTime: resumedTime,
+      activityDuration,
+      totalPausedTime
+    });
+};
+
+export interface PauseActivityProps {
+  userId: string;
+  createdTime: number;
+  pausedTime: number;
+  activityDuration: number;
 }
 
-interface UpdateActivityFieldProps{
-  userId: string; 
-  createdTime: number; 
-  field: keyof TaskItemInfo; 
+export const pauseActivityDb = ({
+  userId,
+  createdTime,
+  pausedTime,
+  activityDuration,
+}: PauseActivityProps) => {
+  console.log("PAUSE TRACKING");
+  return db
+    .collection("userItems")
+    .doc(userId)
+    .collection("activities")
+    .doc(`${createdTime}`)
+    .update({
+      isPaused: true,
+      isResumed: false,
+      pausedTime: pausedTime,
+      activityDuration,
+    });
+};
+
+interface UpdateActivityFieldProps {
+  userId: string;
+  createdTime: number;
+  field: keyof TaskItemInfo;
   text: string;
 }
 
-export const updateActivityField = ({userId, createdTime, field, text}: UpdateActivityFieldProps) => {
-    return db
-    .collection('userItems')
+export const updateActivityField = ({
+  userId,
+  createdTime,
+  field,
+  text
+}: UpdateActivityFieldProps) => {
+  return db
+    .collection("userItems")
     .doc(userId)
-    .collection('activities')
+    .collection("activities")
     .doc(`${createdTime}`)
-    .update({[field]: text})
-}
+    .update({ [field]: text });
+};
 
-export const completeActivity = ({userId, createdTime}: PauseActivityProps) => {
-    return db
-    .collection('userItems')
+export const completeActivity = ({
+  userId,
+  createdTime
+}: PauseActivityProps) => {
+  return db
+    .collection("userItems")
     .doc(userId)
-    .collection('activities')
+    .collection("activities")
     .doc(`${createdTime}`)
     .set({
-        isCompleted: true,
-    })
-}
+      isCompleted: true
+    });
+};
 export interface RemoveActivityProps {
-    userId: string;
-    createdTime: number;
+  userId: string;
+  createdTime: number;
 }
-export const removeActivity = ({userId, createdTime}: RemoveActivityProps) => {
-    return db
-    .collection('userItems')
+export const removeActivity = ({
+  userId,
+  createdTime
+}: RemoveActivityProps) => {
+  return db
+    .collection("userItems")
     .doc(userId)
-    .collection('activities')
-    .doc(`${createdTime}`).delete().then(() => ({isDeleted: true})).catch((e) => {
-        console.error("error in removing", e)
-        return { isDeleted: false}
-    })
-}
-
+    .collection("activities")
+    .doc(`${createdTime}`)
+    .delete()
+    .then(() => ({ isDeleted: true }))
+    .catch(e => {
+      console.error("error in removing", e);
+      return { isDeleted: false };
+    });
+};

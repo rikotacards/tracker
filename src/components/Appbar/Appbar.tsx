@@ -41,7 +41,7 @@ export const Appbar: React.FC = () => {
             </Button>
           ) : null}
         </Toolbar>
-        {user && !user?.uid ? <LinearProgress color='secondary'/> : null}
+        {user && !user?.uid ? <LinearProgress color="secondary" /> : null}
       </AppBar>
       <Toolbar />
     </React.Fragment>

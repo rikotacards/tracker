@@ -22,7 +22,7 @@ const useTimeControl = () => {
   };
 };
 
-export const TimerControlProvider: React.FC = props => {
+let TimerControlProvider: React.FC = props => {
   const timeControl = useTimeControl();
 
   return (
@@ -31,3 +31,6 @@ export const TimerControlProvider: React.FC = props => {
     </TimeControlContext.Provider>
   );
 };
+
+TimerControlProvider = React.memo(TimerControlProvider)
+export {TimerControlProvider}

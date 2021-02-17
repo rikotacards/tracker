@@ -1,10 +1,14 @@
 import React from "react";
-
+/**@description receives value in seconds (not ms) */
 export const useTimer = (initialState = 0) => {
+  console.log('initail state', initialState)
   const [timer, setTimer] = React.useState(initialState);
   const [isActive, setIsActive] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
   const countRef = React.useRef<any>(null);
+  React.useEffect(() => {
+    console.log('use tiemr effect')
+  },[initialState])
   
   const handleStart = React.useCallback(() => {
     setIsActive(true);

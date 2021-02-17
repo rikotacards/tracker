@@ -8,7 +8,7 @@ export const UserContext = React.createContext<firebase.User>(
   {} as firebase.User
 );
 
-export const UserProvider: React.FC = props => {
+ let UserProvider: React.FC = props => {
   const [user, setState] = React.useState<firebase.User>({} as firebase.User);
   React.useEffect(() => {
     const unsub = auth.onAuthStateChanged(async userAuth => {
@@ -24,3 +24,6 @@ export const UserProvider: React.FC = props => {
     <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
   );
 };
+
+UserProvider = React.memo(UserProvider)
+export {UserProvider}
