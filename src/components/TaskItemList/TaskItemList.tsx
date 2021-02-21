@@ -32,7 +32,7 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
       .collection("userItems")
       .doc(userId)
       .collection("activities")
-      .orderBy("timestamp", "desc").limit(3)
+      .orderBy("timestamp", "desc")
       .onSnapshot(snap => {
         const data = snap.docs.map(doc => doc.data());
         setActivities(data as TaskItemInfo[])
@@ -63,8 +63,3 @@ export const TaskItemList: React.FC<TaskItemListProps> = props => {
       <ActivitieByDateList isMobileVariant={isMobileVariant} activitiesByDate={activitiesByDate} demoUserId={demoUserId}/>
   );
 };
-
-// List of task, not grouped by dates
-// const existingTasks = taskItems.map((item, i) => (
-//   <TaskItem key={item?.createdTime} {...item} isMostRecent={i === 1} />
-// ));
