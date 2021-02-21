@@ -25,12 +25,14 @@ export interface TaskItemInfo {
   createdLocalTime: string;
   createdLocalDate: string; // new Date().toDateString() -> standardized
   createdTime: number;
-  pausedTime?: number;
+  pausedTime: number;
   isPaused: boolean;
   isCompleted: boolean;
   isResumed: boolean;
-  resumedTime?: number;
-  isMostRecent?: boolean;
+  resumedTime: number;
+  isMostRecent: boolean;
+  totalPausedTime: number;
+  isDone: boolean;
 }
 
 const initialFormData: TaskItemInfo = {
@@ -40,9 +42,14 @@ const initialFormData: TaskItemInfo = {
   createdLocalTime: "",
   createdLocalDate: "",
   isPaused: false,
+  pausedTime: 0,
   isCompleted: false,
   isResumed: false,
+  resumedTime: 0,
   activityDuration: 0,
+  totalPausedTime: 0,
+  isDone: false,
+  isMostRecent: false,
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -81,7 +88,6 @@ export const AddItemForm: React.FC<TaskItemFormProps> = props => {
       createdLocalTime,
       createdLocalDate,
       userId: user?.uid || "anon",
-      name: user?.displayName || "anon",
       createdTime: Date.now()
     });
     // Reset form

@@ -43,13 +43,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column"
   },
   activityContainer: {
-    width: "170px"
+    width: "130px"
     // padding: theme.spacing(0.7)
+  },
+  moreIcon: {
+    marginLeft: "auto",
+    '& .MuiButtonBase-root':{
+      padding: 0
+    }
   },
   activityText: {
     textTransform: "capitalize",
     textAlign: "left",
-    textDecoration: "none"
+    textDecoration: "none",
+    justifyContent: "left"
   },
   cardContent: {
     display: "flex",
@@ -60,27 +67,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%"
   },
   activityTagContainer: {
-     display: 'flex',
-     flexDirection: 'column'
-  }
+    display: "flex",
+    flexDirection: "column",
+    width: "160px"
+  },
 }));
 export const TaskItemMobile: React.FC<TaskItemInfo> = props => {
   const [isDeleteClicked, setDeleteClicked] = React.useState(false);
 
-  const {
-    createdTime,
-    activity,
-    category,
-    createdLocalTime,
-    isPaused,
-    pausedTime,
-    isResumed,
-    resumedTime,
-    isMostRecent
-  } = props;
+  const { createdTime, activity, category, createdLocalTime } = props;
   const classes = useStyles();
   const user = React.useContext(UserContext);
-  const currentTime = Date.now();
   const onDelete = () => {
     removeActivity({ userId: user?.uid || "anon", createdTime });
   };
@@ -98,41 +95,31 @@ export const TaskItemMobile: React.FC<TaskItemInfo> = props => {
           </Typography>
         </div>
         <div className={classes.activityTagContainer}>
-        <div className={clsx(classes.activityContainer, classes.itemSpacing)}>
-          <EditableText
-            text={activity}
-            placeholder="edit"
-            userId={user?.uid || ""}
-            createdTime={createdTime}
-          >
-            <Button
-              size="small"
-              className={clsx(classes.itemSpacing, classes.activityText)}
+          <div className={clsx(classes.activityContainer, classes.itemSpacing)}>
+            <EditableText
+              text={activity}
+              placeholder="edit"
+              userId={user?.uid || ""}
+              createdTime={createdTime}
             >
-              <Typography variant="caption">{activity}</Typography>
-            </Button>
-          </EditableText>
-
-        </div>
+              <Button
+                size="small"
+                className={clsx(classes.itemSpacing, classes.activityText)}
+              >
+                <Typography variant="caption">{activity}</Typography>
+              </Button>
+            </EditableText>
+          </div>
           <Tag label={category} />
         </div>
-        <Button
-          variant="outlined"
-          className={clsx(classes.itemSpacing, classes.timeDisplay, isPaused)}
-        >
-          <TimeDisplay
-            isResumed={isResumed}
-            createTime={createdTime}
-            isTimerPaused={isPaused}
-            pausedTime={pausedTime}
-            currentTime={currentTime}
-            resumedTime={resumedTime}
-            isMostRecent={isMostRecent}
-          />
-        </Button>
-        <IconButton onClick={toggleDeleteButton}>
-          <MoreVertIcon color={isDeleteClicked ? "secondary" : undefined} />
-        </IconButton>
+        <div className={clsx(classes.itemSpacing)}>
+          <TimeDisplay {...props} />
+        </div>
+        <div className={classes.moreIcon}>
+          <IconButton onClick={toggleDeleteButton}>
+            <MoreVertIcon style={{'padding': 0}} color={isDeleteClicked ? "secondary" : undefined} />
+          </IconButton>
+        </div>
       </div>
       <Collapse in={isDeleteClicked}>
         <Grow in={isDeleteClicked}>

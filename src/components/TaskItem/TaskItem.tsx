@@ -35,41 +35,32 @@ const useStyles = makeStyles((theme: Theme) => ({
   itemSpacing: {
     marginRight: theme.spacing(1)
   },
-  timeDisplay: {
-    padding: theme.spacing(0, 1, 0, 1),
-    borderRadius: theme.spacing(0.5)
-  },
+
   dateTimeContainer: {
     display: "flex"
   },
   activityContainer: {
-    width: "200px",
-    // padding: theme.spacing(0.7)
+    width: "200px"
   },
   activityText: {
-    textTransform: 'capitalize',
-    textAlign: 'left',
-    textDecoration: 'none'
-    
+    display: "flex",
+    textTransform: "capitalize",
+    justifyContent: "left",
+    textAlign: "left",
+    textDecoration: "none",
+    lineHeight: 1
+  },
+  moreIcon: {
+    marginLeft: 'auto'
   }
 }));
 export const TaskItem: React.FC<TaskItemInfo> = props => {
   const [isDeleteClicked, setDeleteClicked] = React.useState(false);
 
-  const {
-    createdTime,
-    activity,
-    category,
-    createdLocalTime,
-    isPaused,
-    pausedTime,
-    isResumed,
-    resumedTime,
-    isMostRecent
-  } = props;
+  const { createdTime, activity, category, createdLocalTime } = props;
   const classes = useStyles();
   const user = React.useContext(UserContext);
-  const currentTime = Date.now();
+
   const onDelete = () => {
     removeActivity({ userId: user?.uid || "anon", createdTime });
   };
@@ -77,8 +68,8 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
     setDeleteClicked(!isDeleteClicked);
   };
 
-  if(isMobile()){
-    return <TaskItemMobile {...props}/>
+  if (isMobile()) {
+    return <TaskItemMobile {...props} />;
   }
 
   return (
@@ -100,28 +91,22 @@ export const TaskItem: React.FC<TaskItemInfo> = props => {
           userId={user?.uid}
           createdTime={createdTime}
         >
-          <Button size='small'  className={clsx(classes.itemSpacing, classes.activityText)}>
-            {activity}
+          <Button
+            size="small"
+            className={clsx(classes.itemSpacing, classes.activityText)}
+          >
+            <Typography variant="caption">{activity}</Typography>
           </Button>
         </EditableText>
       </div>
-      <Button
-        variant="outlined"
-        className={clsx(classes.itemSpacing, classes.timeDisplay, isPaused)}
-      >
-        <TimeDisplay
-          isResumed={isResumed}
-          createTime={createdTime}
-          isTimerPaused={isPaused}
-          pausedTime={pausedTime}
-          currentTime={currentTime}
-          resumedTime={resumedTime}
-          isMostRecent={isMostRecent}
-        />
-      </Button>
-      <IconButton onClick={toggleDeleteButton}>
-        <MoreVertIcon color={isDeleteClicked ? "secondary" : undefined} />
-      </IconButton>
+      <div className={clsx(classes.itemSpacing)}>
+        <TimeDisplay {...props} />
+      </div>
+      <div className={classes.moreIcon}>
+        <IconButton onClick={toggleDeleteButton}>
+          <MoreVertIcon color={isDeleteClicked ? "secondary" : undefined} />
+        </IconButton>
+      </div>
       <Grow in={isDeleteClicked}>
         <Button
           color="secondary"

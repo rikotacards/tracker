@@ -6,55 +6,53 @@ import { TaskItemList } from "src/components/TaskItemList/TaskItemList";
 import { UserContext } from "src/Providers/UserProvider";
 import { SignUp } from "./SignUp";
 
-export const getActivitiesSkeleton = (component: JSX.Element, amount: number) => {
-  const skeletons = []
-  for(let i = 0; i < amount; i++){
-    skeletons.push(
-      component
-    )
-  }
-  return skeletons
+interface ActivitiesSkeletonProps {
+  amount: number;
 }
-
 
 export const useSkeletonStyles = makeStyles((theme: Theme) => ({
   skeletonContainer: {
-    marginBottom: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5)
   },
   skeleton: {
     borderRadius: theme.spacing(0.7)
   }
-}))
+}));
+export const ActivitiesSkeleton: React.FC<ActivitiesSkeletonProps> = props => {
+  const { amount } = props;
+  const classes = useSkeletonStyles();
+  const skeletonCount = [];
+  for (let i = 0; i < amount; i++) {
+    skeletonCount.push(i);
+  }
+  return (
+    <>
+      {skeletonCount.map(index => (
+        <div className={classes.skeletonContainer} key={index}>
+          <Skeleton
+            key={index}
+            className={classes.skeleton}
+            animation={"wave"}
+            variant="rect"
+            height={70}
+          ></Skeleton>
+        </div>
+      ))}
+    </>
+  );
+};
 export const Home: React.FC = () => {
-  const classes = useSkeletonStyles()
   const user = React.useContext(UserContext);
   React.useEffect(() => {}, [user]);
   if (!user) {
     return <SignUp />;
   }
-  return (
+  return !user.uid! ? (
+    <ActivitiesSkeleton amount={8} />
+  ) : (
     <div>
-      <div>
-        {!user.uid! ? (
-          <>
-          {getActivitiesSkeleton(
-            <div className={classes.skeletonContainer}>
-            <Skeleton
-            className={classes.skeleton}
-              animation={"wave"}
-              variant="rect"
-              height={70}
-            ></Skeleton>
-          </div>, 8
-          )}
-          </>
-        ) : (
-          <div>
-            <AddItemForm />
-            <TaskItemList userId={user.uid} />
-          </div>
-        )}
-      </div>
+      <AddItemForm />
+      <TaskItemList userId={user.uid} />
     </div>
   );
 };
